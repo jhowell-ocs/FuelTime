@@ -1,0 +1,23 @@
+﻿services:
+  fueltime:
+    build: .
+    container_name: fueltime-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+    volumes:
+      # Use named volume for better reliability across different container runtimes
+      - fueltime_temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/debug/temp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  fueltime_temp:
+    driver: local

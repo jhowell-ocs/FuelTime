@@ -1,0 +1,60 @@
+# Git files
+.git
+.gitignore
+.github/
+
+# Documentation
+README*.md
+LICENSE
+
+# Development files
+.vscode/
+.idea/
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Local development
+temp/
+*.tmp
+
+# Docker files (don't copy into image)
+.dockerignore
+docker-compose.yml
+
+# Keep test scripts
+!test-*.sh
+env/
+venv/
+.env
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+temp/
+*.tmp
+*.temp
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Development docker files
+docker-compose.override.yml
+
+# Deployment scripts (not needed in container)
+deploy.sh
+deploy.bat

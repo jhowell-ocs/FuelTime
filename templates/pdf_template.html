@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obion County Schools Monthly Fuel Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 8px;
+            font-size: 20px;
+            line-height: 1.1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 8px 0;
+        }
+        
+        .form-field {
+            display: inline-block;
+            margin-right: 35px;
+            margin-bottom: 10px;
+        }
+        
+        .form-field .value {
+            border-bottom: 1px solid black;
+            margin-left: 8px;
+            padding: 3px 8px;
+            font-size: 18px;
+            min-width: 80px;
+            display: inline-block;
+        }
+        
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 8px;
+            width: 100%;
+            font-size: 18px;
+            table-layout: fixed;
+            border: 1px solid black;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+            height: 26px;
+            white-space: nowrap;
+            box-sizing: border-box;
+            margin: 0;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 32px;
+            height: 180px;
+            vertical-align: bottom;
+            position: relative;
+            padding: 6px;
+            overflow: visible;
+            border: 1px solid black;
+            box-sizing: border-box;
+            margin: 0;
+        }
+        
+        /* Fallback for wkhtmltopdf compatibility */
+        @media print {
+            .rotate-header-text {
+                position: absolute;
+                bottom: 50%;
+                left: 50%;
+                width: 130px;
+                height: 12px;
+                transform: translateX(-50%) translateY(50%) rotate(90deg);
+                transform-origin: center center;
+                white-space: nowrap;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                line-height: 12px;
+            }
+            
+            /* Ensure borders are visible in PDF */
+            table, th, td, .rotate-header {
+                border: 1px solid black !important;
+                border-width: 1px !important;
+                border-style: solid !important;
+                border-color: black !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            
+            table {
+                border-collapse: separate !important;
+                border-spacing: 0 !important;
+            }
+        }
+        
+        .day-col {
+            min-width: 26px;
+            writing-mode: horizontal-tb !important;
+            text-orientation: initial !important;
+            height: 140px;
+        }
+        
+        .day-cell {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .cell-value {
+            font-size: 14px;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .rotate-header {
+            height: 140px;
+            min-width: 28px;
+            white-space: nowrap;
+            vertical-align: bottom;
+            position: relative;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid black;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+            margin: 0;
+        }
+        
+        .rotate-header-text {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 130px;
+            height: 12px;
+            transform: translateX(-50%) translateY(50%) rotate(90deg);
+            transform-origin: center center;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 12px;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .spacer {
+            height: 35px;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        OBION COUNTY SCHOOLS MONTHLY FUEL REPORT
+    </div>
+    
+    <div class="form-header">
+        <div class="form-field">
+            MONTH <span class="value">{{ form_data.get('month', '') }}</span>
+        </div>
+        <div class="form-field">
+            YEAR <span class="value">{{ form_data.get('year', '') }}</span>
+        </div>
+        <div class="form-field">
+            NAME <span class="value">{{ form_data.get('name', '') }}</span>
+        </div>
+        <div class="form-field">
+            VEH # <span class="value">{{ form_data.get('vehicle_number', '') }}</span>
+        </div>
+    </div>
+    
+    <div class="spacer"></div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th class="day-col" style="border: 1px solid black !important;">DAY</th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">ODOMETER</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">DIESEL GLS</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">GAS GLS</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">FILL UP LOCATION</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">TRANSMISSION FL</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">ANTI FREEZE</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">OIL</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">STUDENTS AM</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">STUDENTS PM</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">STUDENT AM</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">STUDENT PM</div></th>
+                <th class="rotate-header" style="border: 1px solid black !important;"><div class="rotate-header-text">PRE TRIP</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in range(1, 32) %}
+            <tr>
+                <td class="day-cell" style="border: 1px solid black !important;">{{ day }}</td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('odometer_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('diesel_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('gas_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('location_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('trans_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('antifreeze_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('oil_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('students_am_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('students_pm_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('student_am_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('student_pm_' + day|string, '') }}</span></td>
+                <td style="border: 1px solid black !important;"><span class="cell-value">{{ form_data.get('preset_' + day|string, '') }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

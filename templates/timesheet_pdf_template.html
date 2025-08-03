@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obion County Schools Support Staff Timesheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .timesheet-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 20px;
+        }
+        
+        .employee-info, .support-info {
+            border: 2px solid black;
+            padding: 8px;
+            width: 48%;
+            box-sizing: border-box;
+        }
+        
+        .employee-info h3, .support-info h3 {
+            margin: 0 0 8px 0;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 4px;
+            font-size: 12px;
+            border: 1px solid black;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 3px;
+            border-bottom: 1px solid black;
+            min-height: 18px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            min-width: 80px;
+            padding: 2px 4px;
+            font-size: 10px;
+        }
+        
+        .info-value {
+            flex: 1;
+            padding: 2px 4px;
+            font-size: 10px;
+        }
+        
+        .time-period-section {
+            text-align: center;
+            margin: 8px 0;
+        }
+        
+        .time-period-label {
+            font-weight: bold;
+            font-size: 10px;
+        }
+        
+        .time-period-value {
+            border-bottom: 1px solid black;
+            display: inline-block;
+            min-width: 120px;
+            text-align: center;
+            font-size: 10px;
+            padding: 2px 4px;
+        }
+        
+        .timesheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 9px;
+        }
+        
+        .timesheet-table th, .timesheet-table td {
+            border: 1px solid black;
+            padding: 2px;
+            text-align: center;
+            height: 20px;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        
+        .timesheet-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            font-size: 8px;
+        }
+        
+        .day-column {
+            width: 25px;
+            font-weight: bold;
+        }
+        
+        .date-column {
+            width: 60px;
+            font-weight: bold;
+        }
+        
+        .time-column {
+            width: 45px;
+        }
+        
+        .hours-column {
+            width: 35px;
+            font-weight: bold;
+        }
+        
+        .codes-column {
+            width: 80px;
+        }
+        
+        .timesheet-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 20px;
+        }
+        
+        .signatures {
+            width: 45%;
+        }
+        
+        .signature-section {
+            margin-bottom: 25px;
+        }
+        
+        .signature-label {
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid black;
+            margin-top: 3px;
+            height: 20px;
+        }
+        
+        .codes-section {
+            width: 50%;
+            font-size: 9px;
+        }
+        
+        .codes-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .code-item {
+            margin-bottom: 2px;
+        }
+        
+        .total-row {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            border-top: 2px solid black !important;
+        }
+        
+        .total-row td {
+            font-weight: bold;
+            background-color: #e0e0e0;
+        }
+        
+        .total-days {
+            text-align: right;
+            font-weight: bold;
+            margin: 8px 0;
+            font-size: 11px;
+        }
+        
+        /* Ensure all borders are visible in PDF */
+        @media print {
+            table, th, td, .employee-info, .support-info {
+                border: 1px solid black !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            
+            .timesheet-table {
+                border-collapse: collapse !important;
+            }
+            
+            .timesheet-table th {
+                background-color: #f0f0f0 !important;
+            }
+            
+            .total-row {
+                background-color: #e0e0e0 !important;
+                border-top: 2px solid black !important;
+            }
+            
+            .total-row td {
+                background-color: #e0e0e0 !important;
+                font-weight: bold !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        OBION COUNTY SCHOOLS SUPPORT STAFF TIMESHEET
+    </div>
+    
+    <div class="timesheet-header">
+        <div class="employee-info">
+            <div class="info-row">
+                <div class="info-label">Employee Name:</div>
+                <div class="info-value">{{ form_data.get('emp_name', '') }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Position:</div>
+                <div class="info-value">{{ form_data.get('position', '') }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Employee Number:</div>
+                <div class="info-value">{{ form_data.get('emp_number', '') }}</div>
+            </div>
+        </div>
+        <div class="support-info">
+            <h3>Support Staff</h3>
+            <div class="time-period-section">
+                <div class="time-period-label">Time Period</div><br>
+                <div class="time-period-value">{{ form_data.get('time_period', '') }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <table class="timesheet-table">
+        <thead>
+            <tr>
+                <th rowspan="2" class="day-column">Day</th>
+                <th rowspan="2" class="date-column">Date</th>
+                <th colspan="2">Time In</th>
+                <th colspan="2">Time Out</th>
+                <th rowspan="2" class="hours-column">Total Hours Worked</th>
+                <th rowspan="2" class="codes-column">Use codes at the bottom of the page for any time off.</th>
+            </tr>
+            <tr>
+                <th class="time-column">Time In</th>
+                <th class="time-column">Time Out</th>
+                <th class="time-column">Time In</th>
+                <th class="time-column">Time Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Week 1 -->
+            <tr><td class="day-column">M</td><td class="date-column">{{ form_data.get('date_m1', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_m1', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_m1', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_m1', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_m1', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_m1', '') }}</td><td class="codes-column">{{ form_data.get('codes_m1', '') }}</td></tr>
+            <tr><td class="day-column">T</td><td class="date-column">{{ form_data.get('date_t1', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_t1', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_t1', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_t1', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_t1', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_t1', '') }}</td><td class="codes-column">{{ form_data.get('codes_t1', '') }}</td></tr>
+            <tr><td class="day-column">W</td><td class="date-column">{{ form_data.get('date_w1', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_w1', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_w1', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_w1', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_w1', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_w1', '') }}</td><td class="codes-column">{{ form_data.get('codes_w1', '') }}</td></tr>
+            <tr><td class="day-column">Th</td><td class="date-column">{{ form_data.get('date_th1', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_th1', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_th1', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_th1', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_th1', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_th1', '') }}</td><td class="codes-column">{{ form_data.get('codes_th1', '') }}</td></tr>
+            <tr><td class="day-column">F</td><td class="date-column">{{ form_data.get('date_f1', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_f1', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_f1', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_f1', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_f1', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_f1', '') }}</td><td class="codes-column">{{ form_data.get('codes_f1', '') }}</td></tr>
+            <tr style="background-color: #f0f0f0;"><td class="day-column">Sat/Sun</td><td class="date-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="hours-column"></td><td class="codes-column"></td></tr>
+            
+            <!-- Week 2 -->
+            <tr><td class="day-column">M</td><td class="date-column">{{ form_data.get('date_m2', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_m2', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_m2', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_m2', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_m2', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_m2', '') }}</td><td class="codes-column">{{ form_data.get('codes_m2', '') }}</td></tr>
+            <tr><td class="day-column">T</td><td class="date-column">{{ form_data.get('date_t2', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_t2', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_t2', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_t2', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_t2', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_t2', '') }}</td><td class="codes-column">{{ form_data.get('codes_t2', '') }}</td></tr>
+            <tr><td class="day-column">W</td><td class="date-column">{{ form_data.get('date_w2', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_w2', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_w2', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_w2', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_w2', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_w2', '') }}</td><td class="codes-column">{{ form_data.get('codes_w2', '') }}</td></tr>
+            <tr><td class="day-column">Th</td><td class="date-column">{{ form_data.get('date_th2', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_th2', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_th2', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_th2', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_th2', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_th2', '') }}</td><td class="codes-column">{{ form_data.get('codes_th2', '') }}</td></tr>
+            <tr><td class="day-column">F</td><td class="date-column">{{ form_data.get('date_f2', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_f2', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_f2', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_f2', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_f2', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_f2', '') }}</td><td class="codes-column">{{ form_data.get('codes_f2', '') }}</td></tr>
+            <tr style="background-color: #f0f0f0;"><td class="day-column">Sat/Sun</td><td class="date-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="hours-column"></td><td class="codes-column"></td></tr>
+            
+            <!-- Week 3 -->
+            <tr><td class="day-column">M</td><td class="date-column">{{ form_data.get('date_m3', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_m3', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_m3', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_m3', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_m3', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_m3', '') }}</td><td class="codes-column">{{ form_data.get('codes_m3', '') }}</td></tr>
+            <tr><td class="day-column">T</td><td class="date-column">{{ form_data.get('date_t3', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_t3', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_t3', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_t3', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_t3', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_t3', '') }}</td><td class="codes-column">{{ form_data.get('codes_t3', '') }}</td></tr>
+            <tr><td class="day-column">W</td><td class="date-column">{{ form_data.get('date_w3', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_w3', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_w3', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_w3', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_w3', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_w3', '') }}</td><td class="codes-column">{{ form_data.get('codes_w3', '') }}</td></tr>
+            <tr><td class="day-column">Th</td><td class="date-column">{{ form_data.get('date_th3', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_th3', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_th3', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_th3', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_th3', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_th3', '') }}</td><td class="codes-column">{{ form_data.get('codes_th3', '') }}</td></tr>
+            <tr><td class="day-column">F</td><td class="date-column">{{ form_data.get('date_f3', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_f3', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_f3', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_f3', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_f3', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_f3', '') }}</td><td class="codes-column">{{ form_data.get('codes_f3', '') }}</td></tr>
+            <tr style="background-color: #f0f0f0;"><td class="day-column">Sat/Sun</td><td class="date-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="hours-column"></td><td class="codes-column"></td></tr>
+            
+            <!-- Week 4 -->
+            <tr><td class="day-column">M</td><td class="date-column">{{ form_data.get('date_m4', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_m4', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_m4', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_m4', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_m4', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_m4', '') }}</td><td class="codes-column">{{ form_data.get('codes_m4', '') }}</td></tr>
+            <tr><td class="day-column">T</td><td class="date-column">{{ form_data.get('date_t4', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_t4', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_t4', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_t4', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_t4', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_t4', '') }}</td><td class="codes-column">{{ form_data.get('codes_t4', '') }}</td></tr>
+            <tr><td class="day-column">W</td><td class="date-column">{{ form_data.get('date_w4', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_w4', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_w4', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_w4', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_w4', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_w4', '') }}</td><td class="codes-column">{{ form_data.get('codes_w4', '') }}</td></tr>
+            <tr><td class="day-column">Th</td><td class="date-column">{{ form_data.get('date_th4', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_th4', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_th4', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_th4', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_th4', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_th4', '') }}</td><td class="codes-column">{{ form_data.get('codes_th4', '') }}</td></tr>
+            <tr><td class="day-column">F</td><td class="date-column">{{ form_data.get('date_f4', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_f4', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_f4', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_f4', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_f4', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_f4', '') }}</td><td class="codes-column">{{ form_data.get('codes_f4', '') }}</td></tr>
+            <tr style="background-color: #f0f0f0;"><td class="day-column">Sat/Sun</td><td class="date-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="hours-column"></td><td class="codes-column"></td></tr>
+            
+            <!-- Week 5 -->
+            <tr><td class="day-column">M</td><td class="date-column">{{ form_data.get('date_m5', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_m5', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_m5', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_m5', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_m5', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_m5', '') }}</td><td class="codes-column">{{ form_data.get('codes_m5', '') }}</td></tr>
+            <tr><td class="day-column">T</td><td class="date-column">{{ form_data.get('date_t5', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_t5', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_t5', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_t5', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_t5', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_t5', '') }}</td><td class="codes-column">{{ form_data.get('codes_t5', '') }}</td></tr>
+            <tr><td class="day-column">W</td><td class="date-column">{{ form_data.get('date_w5', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_w5', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_w5', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_w5', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_w5', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_w5', '') }}</td><td class="codes-column">{{ form_data.get('codes_w5', '') }}</td></tr>
+            <tr><td class="day-column">Th</td><td class="date-column">{{ form_data.get('date_th5', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_th5', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_th5', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_th5', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_th5', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_th5', '') }}</td><td class="codes-column">{{ form_data.get('codes_th5', '') }}</td></tr>
+            <tr><td class="day-column">F</td><td class="date-column">{{ form_data.get('date_f5', '') }}</td><td class="time-column">{{ form_data.get('time_in_1_f5', '') }}</td><td class="time-column">{{ form_data.get('time_out_1_f5', '') }}</td><td class="time-column">{{ form_data.get('time_in_2_f5', '') }}</td><td class="time-column">{{ form_data.get('time_out_2_f5', '') }}</td><td class="hours-column">{{ form_data.get('total_hours_f5', '') }}</td><td class="codes-column">{{ form_data.get('codes_f5', '') }}</td></tr>
+            <tr style="background-color: #f0f0f0;"><td class="day-column">Sat/Sun</td><td class="date-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="time-column"></td><td class="hours-column"></td><td class="codes-column"></td></tr>
+            
+            <!-- Total Hours Row -->
+            <tr class="total-row">
+                <td colspan="6" style="text-align: right; font-weight: bold;">TOTAL HOURS WORKED:</td>
+                <td class="hours-column" style="font-weight: bold;">{{ form_data.get('total_hours_all', '0') }}</td>
+                <td class="codes-column"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="total-days">
+        <strong>{{ form_data.get('total_days', '0') }} Total days worked this pay period</strong>
+    </div>
+    
+    <div class="timesheet-footer">
+        <div class="signatures">
+            <div class="signature-section">
+                <div class="signature-label">Employee Signature</div>
+                {% if form_data.get('employee_signature') %}
+                    <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" style="max-width: 200px; max-height: 60px; border: 1px solid #ccc; margin-top: 5px;">
+                {% else %}
+                    <div class="signature-line"></div>
+                {% endif %}
+            </div>
+            <div class="signature-section">
+                <div class="signature-label">Supervisor Signature</div>
+                {% if form_data.get('supervisor_signature') %}
+                    <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" style="max-width: 200px; max-height: 60px; border: 1px solid #ccc; margin-top: 5px;">
+                {% else %}
+                    <div class="signature-line"></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="codes-section">
+            <div class="codes-title">Codes:</div>
+            <div class="code-item">Code P - Personal Leave</div>
+            <div class="code-item">Code AWOP - Absent Without Pay</div>
+            <div class="code-item">Code B - Bereavement Leave</div>
+            <div class="code-item">Code S - Sick Leave</div>
+            <div class="code-item">Code 6 - Meeting, etc.</div>
+            <div class="code-item">Code J - Court/Jury Duty</div>
+            <div class="code-item">Code H - Holiday</div>
+            <div class="code-item">Code V - Vacation</div>
+        </div>
+    </div>
+</body>
+</html>

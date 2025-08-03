@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="recipient" content="jhowell@ocboe.com">
+    <title>Obion County Schools - Forms Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            font-size: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        /* Logo Section Styles */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-bottom: 2px solid #007cba;
+            background-color: #f8f9fa;
+        }
+        
+        .logo-section img {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Tab System Styles */
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            border-top: 2px solid transparent;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            margin-right: 2px;
+            transition: background-color 0.3s;
+        }
+        
+        .tab-button:first-child {
+            border-left: 2px solid #ddd;
+        }
+        
+        .tab-button.active {
+            background-color: white;
+            border-top: 2px solid #007cba;
+            border-bottom: 2px solid white;
+            margin-bottom: -2px;
+        }
+        
+        .tab-button:hover:not(.active) {
+            background-color: #e1e1e1;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 20px 0;
+        }
+        
+        .form-field {
+            display: inline-block;
+            margin-right: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .form-field input {
+            border: none;
+            border-bottom: 1px solid black;
+            margin-left: 10px;
+            padding: 6px 8px;
+            font-size: 20px;
+            background-color: white;
+            outline: none;
+            min-width: 100px;
+        }
+        
+        .form-field input:focus {
+            border-bottom: 2px solid #007cba;
+            background-color: #f9f9f9;
+        }
+        
+        table {
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: auto;
+            white-space: nowrap;
+            width: 100%;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            height: 45px;
+            white-space: nowrap;
+        }
+        
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            font-size: 20px;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            min-width: 40px;
+            height: 200px;
+        }
+        
+        .day-col {
+            min-width: 30px;
+            writing-mode: horizontal-tb;
+            text-orientation: initial;
+            height: 200px;
+        }
+        
+        .day-cell {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        input[type="text"], input[type="number"] {
+            border: none;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 20px;
+            padding: 0;
+            margin: 0;
+            white-space: nowrap;
+            overflow: visible;
+            min-width: 100%;
+        }
+        
+        .rotate-header {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            height: 200px;
+            min-width: 35px;
+            white-space: nowrap;
+        }
+        
+        .spacer {
+            height: 0;
+            visibility: hidden;
+        }
+        
+        .button-container {
+            margin: 30px 0;
+            display: flex;
+            gap: 20px;
+            padding: 15px 0;
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            font-size: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #007cba;
+        }
+        
+        .btn-primary:hover {
+            background-color: #005a8a;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007cba;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Timesheet Specific Styles */
+        .auto-fill-section {
+            background-color: #f8f9fa;
+            border: 2px solid #007cba;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .auto-fill-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #007cba;
+            margin-bottom: 15px;
+        }
+        
+        .auto-fill-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auto-fill-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 160px;
+        }
+        
+        .auto-fill-label {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .auto-fill-input {
+            width: 160px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 20px;
+            height: 42px;
+            box-sizing: border-box;
+            line-height: 1.4;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+            appearance: none;
+        }
+        
+        /* Ensure all input types have consistent height and font size */
+        .auto-fill-input[type="number"] {
+            height: 42px !important;
+            padding: 8px !important;
+            line-height: 1.4 !important;
+            font-size: 20px !important;
+        }
+        
+        .auto-fill-input[type="time"] {
+            height: 42px !important;
+            padding: 8px !important;
+            font-size: 20px !important;
+        }
+        
+        .auto-fill-input select {
+            height: 42px !important;
+            padding: 8px !important;
+            font-size: 20px !important;
+        }
+        
+        .month-year-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .auto-fill-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .auto-fill-btn {
+            padding: 8px 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .auto-fill-btn.primary {
+            background-color: #007cba;
+            color: white;
+        }
+        
+        .auto-fill-btn.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .auto-fill-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .timesheet-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .employee-info, .support-info {
+            border: 2px solid black;
+            padding: 10px;
+            width: 48%;
+        }
+        
+        .employee-info h3, .support-info h3 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 5px;
+            font-size: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 5px;
+            border-bottom: 1px solid black;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            min-width: 120px;
+            padding: 3px 5px;
+            font-size: 20px;
+        }
+        
+        .info-value {
+            flex: 1;
+            padding: 3px 5px;
+            font-size: 20px;
+        }
+        
+        .timesheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            table-layout: auto;
+        }
+        
+        .timesheet-table th, .timesheet-table td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+            height: 35px;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+        
+        .timesheet-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            font-size: 20px;
+            writing-mode: horizontal-tb;
+            text-orientation: initial;
+        }
+        
+        .day-column {
+            width: auto;
+            min-width: 40px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .date-column {
+            width: auto;
+            min-width: 80px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .time-input {
+            width: 100%;
+            min-width: 80px;
+            border: none;
+            text-align: center;
+            font-size: 20px !important;
+            font-weight: bold;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        
+        .hours-input {
+            width: 100%;
+            min-width: 80px;
+            border: none;
+            text-align: center;
+            font-size: 20px !important;
+            font-weight: bold;
+            padding: 4px;
+            box-sizing: border-box;
+        }
+        
+        .timesheet-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .signatures {
+            width: 45%;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid black;
+            margin: 20px 0;
+            height: 30px;
+        }
+        
+        .codes-section {
+            width: 50%;
+            font-size: 20px;
+        }
+
+        .codes-input {
+            width: 100%;
+            border: none;
+            text-align: center;
+            font-size: 20px !important;
+            padding: 5px;
+            background: transparent;
+            font-weight: bold;
+            box-sizing: border-box;
+            min-width: 120px;
+        }
+        
+        .total-days {
+            text-align: right;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 20px;
+        }
+        
+        /* Signature Styles */
+        .signature-section {
+            margin-bottom: 20px;
+        }
+        
+        .signature-label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .signature-controls {
+            margin-bottom: 10px;
+        }
+        
+        .signature-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            background-color: #007cba;
+            color: white;
+        }
+        
+        .signature-btn.secondary {
+            background-color: #6c757d;
+        }
+        
+        .signature-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .signature-display {
+            min-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .signature-placeholder {
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Modal Styles */
+        .signature-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .signature-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: none;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .signature-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .signature-modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007cba;
+        }
+        
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        
+        .close-modal:hover {
+            color: #000;
+        }
+        
+        .signature-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .signature-tab {
+            background-color: #f1f1f1;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 2px;
+            border-top: 2px solid transparent;
+        }
+        
+        .signature-tab.active {
+            background-color: white;
+            border-top: 2px solid #007cba;
+            border-bottom: 2px solid white;
+            margin-bottom: -2px;
+        }
+        
+        .signature-tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .signature-tab-content.active {
+            display: block;
+        }
+        
+        .signature-canvas-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .signature-canvas {
+            border: 2px solid #007cba;
+            border-radius: 4px;
+            cursor: crosshair;
+            background-color: white;
+        }
+        
+        .signature-upload {
+            text-align: center;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #007cba;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .file-upload-area:hover {
+            background-color: #e9ecef;
+        }
+        
+        .file-upload-area.dragover {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #007cba;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .signature-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .modal-btn.primary {
+            background-color: #007cba;
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo Section -->
+    <div class="logo-section">
+        {% if logo_base64 %}
+            <img src="{{ logo_base64 }}" alt="FuelTime Logo" height="200" style="max-width: 100%; object-fit: contain;">
+        {% else %}
+            <div style="text-align: center; padding: 75px; color: #666;">
+                FuelTime Logo
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showTab('fuel')">Fuel Report</button>
+            <button class="tab-button" onclick="showTab('timesheet')">Timesheet</button>
+        </div>
+        
+        <!-- Fuel Report Tab -->
+        <div id="fuel-tab" class="tab-content active">
+            <div class="header">
+                OBION COUNTY SCHOOLS MONTHLY FUEL REPORT
+            </div>
+            <div class="form-header">
+                <div class="form-field">
+                    MONTH <input type="text" size="10" name="month" placeholder="Enter month">
+                </div>
+                <div class="form-field">
+                    YEAR <input type="text" size="6" name="year" placeholder="Enter year">
+                </div>
+                <div class="form-field">
+                    NAME <input type="text" size="25" name="name" placeholder="Enter your name">
+                </div>
+                <div class="form-field">
+                    VEH # <input type="text" size="8" name="vehicle_number" placeholder="Vehicle #">
+                </div>
+            </div>
+            
+            <div class="spacer"></div>
+            
+            <div class="button-container">
+                <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+                <button class="btn btn-success" onclick="openEmail()">Open Email</button>
+            </div>
+            
+            <div class="status-message" id="statusMessage"></div>
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <span>Processing...</span>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th class="day-col">DAY</th>
+                        <th class="rotate-header">ODOMETER</th>
+                        <th class="rotate-header">DIESEL GLS</th>
+                        <th class="rotate-header">GAS GLS</th>
+                        <th class="rotate-header">FILL UP LOCATION</th>
+                        <th class="rotate-header">TRANSMISSION FL</th>
+                        <th class="rotate-header">ANTI FREEZE</th>
+                        <th class="rotate-header">OIL</th>
+                        <th class="rotate-header">STUDENTS AM</th>
+                        <th class="rotate-header">STUDENTS PM</th>
+                        <th class="rotate-header">STUDENT AM</th>
+                        <th class="rotate-header">STUDENT PM</th>
+                        <th class="rotate-header">PRE TRIP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day in range(1, 32) %}
+                    <tr>
+                        <td class="day-cell">{{ day }}</td>
+                        <td><input type="text" name="odometer_{{ day }}"></td>
+                        <td><input type="text" name="diesel_{{ day }}"></td>
+                        <td><input type="text" name="gas_{{ day }}"></td>
+                        <td><input type="text" name="location_{{ day }}"></td>
+                        <td><input type="text" name="trans_{{ day }}"></td>
+                        <td><input type="text" name="antifreeze_{{ day }}"></td>
+                        <td><input type="text" name="oil_{{ day }}"></td>
+                        <td><input type="text" name="students_am_{{ day }}"></td>
+                        <td><input type="text" name="students_pm_{{ day }}"></td>
+                        <td><input type="text" name="student_am_{{ day }}"></td>
+                        <td><input type="text" name="student_pm_{{ day }}"></td>
+                        <td><input type="text" name="preset_{{ day }}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Timesheet Tab -->
+        <div id="timesheet-tab" class="tab-content">
+            <div class="header">
+                OBION COUNTY SCHOOLS SUPPORT STAFF TIMESHEET
+            </div>
+            
+            <!-- Auto-fill Section -->
+            <div class="auto-fill-section">
+                <div class="auto-fill-header">Auto-Fill Standard Schedule</div>
+                <div class="auto-fill-controls">
+                    <div class="month-year-controls">
+                        <div class="auto-fill-group">
+                            <div class="auto-fill-label">Month</div>
+                            <select class="auto-fill-input" id="schedule-month">
+                                <option value="">Select Month</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="auto-fill-group">
+                            <div class="auto-fill-label">Year</div>
+                            <input type="number" class="auto-fill-input" id="schedule-year" placeholder="Enter year" min="2020" max="2030">
+                        </div>
+                    </div>
+                    <div class="auto-fill-group">
+                        <div class="auto-fill-label">Start Time</div>
+                        <input type="time" class="auto-fill-input" id="start-time" value="08:00">
+                    </div>
+                    <div class="auto-fill-group">
+                        <div class="auto-fill-label">Lunch Out</div>
+                        <input type="time" class="auto-fill-input" id="lunch-out" value="12:00">
+                    </div>
+                    <div class="auto-fill-group">
+                        <div class="auto-fill-label">Lunch In</div>
+                        <input type="time" class="auto-fill-input" id="lunch-in" value="12:30">
+                    </div>
+                    <div class="auto-fill-group">
+                        <div class="auto-fill-label">End Time</div>
+                        <input type="time" class="auto-fill-input" id="end-time" value="16:00">
+                    </div>
+                </div>
+                <div class="auto-fill-buttons">
+                    <button class="auto-fill-btn primary" onclick="autoFillSchedule()">Auto-Fill Schedule</button>
+                    <button class="auto-fill-btn secondary" onclick="clearSchedule()">Clear All Times</button>
+                </div>
+            </div>
+            
+            <div class="timesheet-header">
+                <div class="employee-info">
+                    <div class="info-row">
+                        <div class="info-label">Employee Name:</div>
+                        <div class="info-value"><input type="text" name="emp_name" style="border:none; width:100%; font-size:20px;" placeholder="Enter name"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Position:</div>
+                        <div class="info-value"><input type="text" name="position" style="border:none; width:100%; font-size:20px;" placeholder="Enter position"></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Employee Number:</div>
+                        <div class="info-value"><input type="text" name="emp_number" style="border:none; width:100%; font-size:20px;" placeholder="Enter number"></div>
+                    </div>
+                </div>
+                <div class="support-info">
+                    <h3>Support Staff</h3>
+                    <div style="text-align: center; margin: 10px 0;">
+                        <strong>Time Period</strong><br>
+                        <input type="text" name="time_period" style="border:none; border-bottom:1px solid black; text-align:center; width:150px; font-size:20px;" placeholder="e.g., 2/1/25 - 2/28/25">
+                    </div>
+                </div>
+            </div>
+            
+            <table class="timesheet-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Day</th>
+                        <th rowspan="2">Date</th>
+                        <th colspan="2">Time In</th>
+                        <th colspan="2">Time Out</th>
+                        <th rowspan="2">Total Hours Worked</th>
+                        <th rowspan="2">Use codes at the bottom of the page for any time off.</th>
+                    </tr>
+                    <tr>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                    </tr>
+                </thead>
+                <tbody id="timesheet-body">
+                    <!-- Static calendar structure - always starts with Monday -->
+                    <tr><td class="day-column">M</td><td class="date-column" id="date-m1"></td><td><input type="time" class="time-input" name="time_in_1_m1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_m1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_m1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_m1" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_m1" readonly></td><td><input type="text" name="codes_m1" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">T</td><td class="date-column" id="date-t1"></td><td><input type="time" class="time-input" name="time_in_1_t1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_t1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_t1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_t1" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_t1" readonly></td><td><input type="text" name="codes_t1" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">W</td><td class="date-column" id="date-w1"></td><td><input type="time" class="time-input" name="time_in_1_w1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_w1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_w1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_w1" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_w1" readonly></td><td><input type="text" name="codes_w1" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Th</td><td class="date-column" id="date-th1"></td><td><input type="time" class="time-input" name="time_in_1_th1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_th1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_th1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_th1" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_th1" readonly></td><td><input type="text" name="codes_th1" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">F</td><td class="date-column" id="date-f1"></td><td><input type="time" class="time-input" name="time_in_1_f1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_f1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_f1" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_f1" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_f1" readonly></td><td><input type="text" name="codes_f1" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Sat/Sun</td><td class="date-column" style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td></tr>
+                    
+                    <tr><td class="day-column">M</td><td class="date-column" id="date-m2"></td><td><input type="time" class="time-input" name="time_in_1_m2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_m2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_m2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_m2" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_m2" readonly></td><td><input type="text" name="codes_m2" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">T</td><td class="date-column" id="date-t2"></td><td><input type="time" class="time-input" name="time_in_1_t2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_t2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_t2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_t2" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_t2" readonly></td><td><input type="text" name="codes_t2" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">W</td><td class="date-column" id="date-w2"></td><td><input type="time" class="time-input" name="time_in_1_w2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_w2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_w2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_w2" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_w2" readonly></td><td><input type="text" name="codes_w2" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Th</td><td class="date-column" id="date-th2"></td><td><input type="time" class="time-input" name="time_in_1_th2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_th2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_th2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_th2" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_th2" readonly></td><td><input type="text" name="codes_th2" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">F</td><td class="date-column" id="date-f2"></td><td><input type="time" class="time-input" name="time_in_1_f2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_f2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_f2" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_f2" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_f2" readonly></td><td><input type="text" name="codes_f2" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Sat/Sun</td><td class="date-column" style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td></tr>
+                    
+                    <tr><td class="day-column">M</td><td class="date-column" id="date-m3"></td><td><input type="time" class="time-input" name="time_in_1_m3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_m3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_m3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_m3" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_m3" readonly></td><td><input type="text" name="codes_m3" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">T</td><td class="date-column" id="date-t3"></td><td><input type="time" class="time-input" name="time_in_1_t3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_t3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_t3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_t3" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_t3" readonly></td><td><input type="text" name="codes_t3" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">W</td><td class="date-column" id="date-w3"></td><td><input type="time" class="time-input" name="time_in_1_w3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_w3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_w3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_w3" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_w3" readonly></td><td><input type="text" name="codes_w3" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Th</td><td class="date-column" id="date-th3"></td><td><input type="time" class="time-input" name="time_in_1_th3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_th3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_th3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_th3" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_th3" readonly></td><td><input type="text" name="codes_th3" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">F</td><td class="date-column" id="date-f3"></td><td><input type="time" class="time-input" name="time_in_1_f3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_f3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_f3" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_f3" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_f3" readonly></td><td><input type="text" name="codes_f3" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Sat/Sun</td><td class="date-column" style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td></tr>
+                    
+                    <tr><td class="day-column">M</td><td class="date-column" id="date-m4"></td><td><input type="time" class="time-input" name="time_in_1_m4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_m4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_m4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_m4" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_m4" readonly></td><td><input type="text" name="codes_m4" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">T</td><td class="date-column" id="date-t4"></td><td><input type="time" class="time-input" name="time_in_1_t4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_t4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_t4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_t4" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_t4" readonly></td><td><input type="text" name="codes_t4" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">W</td><td class="date-column" id="date-w4"></td><td><input type="time" class="time-input" name="time_in_1_w4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_w4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_w4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_w4" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_w4" readonly></td><td><input type="text" name="codes_w4" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Th</td><td class="date-column" id="date-th4"></td><td><input type="time" class="time-input" name="time_in_1_th4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_th4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_th4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_th4" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_th4" readonly></td><td><input type="text" name="codes_th4" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">F</td><td class="date-column" id="date-f4"></td><td><input type="time" class="time-input" name="time_in_1_f4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_f4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_f4" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_f4" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_f4" readonly></td><td><input type="text" name="codes_f4" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Sat/Sun</td><td class="date-column" style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td></tr>
+                    
+                    <tr><td class="day-column">M</td><td class="date-column" id="date-m5"></td><td><input type="time" class="time-input" name="time_in_1_m5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_m5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_m5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_m5" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_m5" readonly></td><td><input type="text" name="codes_m5" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">T</td><td class="date-column" id="date-t5"></td><td><input type="time" class="time-input" name="time_in_1_t5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_t5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_t5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_t5" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_t5" readonly></td><td><input type="text" name="codes_t5" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">W</td><td class="date-column" id="date-w5"></td><td><input type="time" class="time-input" name="time_in_1_w5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_w5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_w5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_w5" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_w5" readonly></td><td><input type="text" name="codes_w5" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Th</td><td class="date-column" id="date-th5"></td><td><input type="time" class="time-input" name="time_in_1_th5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_th5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_th5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_th5" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_th5" readonly></td><td><input type="text" name="codes_th5" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">F</td><td class="date-column" id="date-f5"></td><td><input type="time" class="time-input" name="time_in_1_f5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_1_f5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_in_2_f5" onchange="calculateHours(this)"></td><td><input type="time" class="time-input" name="time_out_2_f5" onchange="calculateHours(this)"></td><td><input type="text" class="hours-input" name="total_hours_f5" readonly></td><td><input type="text" name="codes_f5" class="codes-input" oninput="clearTimesWhenCodeEntered(this)"></td></tr>
+                    <tr><td class="day-column">Sat/Sun</td><td class="date-column" style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td><td style="background-color: #f0f0f0;"></td></tr>
+                </tbody>
+            </table>
+            
+            <div class="total-days">
+                <strong><span id="total-days">0</span> Total days worked this pay period</strong>
+            </div>
+            
+            <div class="timesheet-footer">
+                <div class="signatures">
+                    <div class="signature-section">
+                        <div class="signature-label">Employee Signature</div>
+                        <div class="signature-controls">
+                            <button type="button" class="signature-btn" onclick="openEmployeeSignature()">Add Signature</button>
+                            <button type="button" class="signature-btn secondary" onclick="clearEmployeeSignature()">Clear</button>
+                        </div>
+                        <div class="signature-display" id="employee-signature-display">
+                            <canvas id="employee-signature-canvas" style="display: none; border: 1px solid #ccc; width: 300px; height: 100px;"></canvas>
+                            <img id="employee-signature-image" style="display: none; max-width: 300px; max-height: 100px; border: 1px solid #ccc;">
+                            <div class="signature-placeholder" id="employee-signature-placeholder">Click "Add Signature" to sign</div>
+                        </div>
+                    </div>
+                    <div class="signature-section" style="margin-top: 30px;">
+                        <div class="signature-label">Supervisor Signature</div>
+                        <div class="signature-controls">
+                            <button type="button" class="signature-btn" onclick="openSupervisorSignature()">Add Signature</button>
+                            <button type="button" class="signature-btn secondary" onclick="clearSupervisorSignature()">Clear</button>
+                        </div>
+                        <div class="signature-display" id="supervisor-signature-display">
+                            <canvas id="supervisor-signature-canvas" style="display: none; border: 1px solid #ccc; width: 300px; height: 100px;"></canvas>
+                            <img id="supervisor-signature-image" style="display: none; max-width: 300px; max-height: 100px; border: 1px solid #ccc;">
+                            <div class="signature-placeholder" id="supervisor-signature-placeholder">Click "Add Signature" to sign</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="codes-section">
+                    <strong>Codes:</strong><br>
+                    Code P - Personal Leave<br>
+                    Code AWOP - Absent Without Pay<br>
+                    Code B - Bereavement Leave<br>
+                    Code S - Sick Leave<br>
+                    Code 6 - Meeting, etc.<br>
+                    Code J - Court/Jury Duty<br>
+                    Code H - Holiday<br>
+                    Code V - Vacation
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button class="btn btn-primary" onclick="downloadTimesheetPDF()">Download Timesheet PDF</button>
+                <button class="btn btn-success" onclick="openEmail()">Open Email</button>
+                <button class="btn btn-secondary" onclick="clearTimesheet()">Clear Form</button>
+            </div>
+            
+            <div class="status-message" id="timesheetStatusMessage"></div>
+        </div>
+    </div>
+    
+    <!-- Signature Modal -->
+    <div id="signatureModal" class="signature-modal">
+        <div class="signature-modal-content">
+            <div class="signature-modal-header">
+                <h2 class="signature-modal-title" id="signatureModalTitle">Add Signature</h2>
+                <button class="close-modal" onclick="closeSignatureModal()">&times;</button>
+            </div>
+            
+            <div class="signature-tabs">
+                <button class="signature-tab active" onclick="showSignatureTab('draw')">Draw Signature</button>
+                <button class="signature-tab" onclick="showSignatureTab('upload')">Upload Image</button>
+            </div>
+            
+            <div id="draw-tab" class="signature-tab-content active">
+                <div class="signature-canvas-container">
+                    <canvas id="signatureCanvas" class="signature-canvas" width="500" height="200"></canvas>
+                </div>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <button type="button" class="modal-btn secondary" onclick="clearCanvas()">Clear Canvas</button>
+                </div>
+                <p style="text-align: center; color: #666; font-size: 14px;">
+                    Use your mouse or touch to draw your signature above
+                </p>
+            </div>
+            
+            <div id="upload-tab" class="signature-tab-content">
+                <div class="signature-upload">
+                    <div class="file-upload-area" onclick="document.getElementById('signatureFile').click()" 
+                         ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-subtext">PNG, JPG, or GIF (max 5MB)</div>
+                    </div>
+                    <input type="file" id="signatureFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                    <div id="uploadPreview" style="margin-top: 20px; text-align: center; display: none;">
+                        <img id="uploadPreviewImage" style="max-width: 400px; max-height: 150px; border: 1px solid #ddd;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-modal-actions">
+                <button type="button" class="modal-btn secondary" onclick="closeSignatureModal()">Cancel</button>
+                <button type="button" class="modal-btn primary" onclick="saveSignature()">Save Signature</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab System Functions
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to selected button
+            event.target.classList.add('active');
+            
+            // Initialize timesheet if switching to timesheet tab
+            if (tabName === 'timesheet') {
+                initializeTimesheet();
+            }
+        }
+        
+        // Timesheet Functions
+        function initializeTimesheet() {
+            // Don't auto-set month/year - let user choose
+            // Clear dates initially and wait for user selection
+            clearCalendarDates();
+            updateTotalDays();
+        }
+        
+        function clearCalendarDates() {
+            // Clear all date fields
+            const dateFields = document.querySelectorAll('.date-column');
+            dateFields.forEach(field => {
+                if (!field.style.backgroundColor) { // Don't clear weekend fields
+                    field.textContent = '';
+                }
+            });
+            
+            // Clear the time period field as well
+            const timePeriodField = document.querySelector('[name="time_period"]');
+            if (timePeriodField) {
+                timePeriodField.value = '';
+            }
+        }
+        
+        function updateTimePeriod() {
+            const month = parseInt(document.getElementById('schedule-month').value);
+            const year = parseInt(document.getElementById('schedule-year').value);
+            
+            if (month && year) {
+                // Get first day of month
+                const firstDay = new Date(year, month - 1, 1);
+                // Get last day of month
+                const lastDay = new Date(year, month, 0);
+                
+                // Format as M/D/YY - M/D/YY
+                const startDate = `${month}/1/${year.toString().substr(-2)}`;
+                const endDate = `${month}/${lastDay.getDate()}/${year.toString().substr(-2)}`;
+                
+                const timePeriodField = document.querySelector('[name="time_period"]');
+                if (timePeriodField) {
+                    timePeriodField.value = `${startDate} - ${endDate}`;
+                }
+                
+                // Update all date fields in the calendar
+                updateCalendarDates(month, year);
+            }
+        }
+        
+        function updateCalendarDates(month, year) {
+            // Find what day of the week the month starts on
+            const firstDay = new Date(year, month - 1, 1);
+            const startDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            
+            // Convert to our calendar format (0 = Monday, 1 = Tuesday, etc.)
+            let calendarStartDay;
+            if (startDayOfWeek === 0) { // Sunday
+                calendarStartDay = 6; // Will be handled as weekend, skip to Monday
+            } else {
+                calendarStartDay = startDayOfWeek - 1; // Convert to 0-based Monday start
+            }
+            
+            // Get number of days in the selected month
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // Clear all date fields first
+            const dateFields = document.querySelectorAll('.date-column');
+            dateFields.forEach(field => {
+                if (!field.style.backgroundColor) { // Don't clear weekend fields
+                    field.textContent = '';
+                }
+            });
+            
+            // Static calendar mapping
+            const weekPattern = ['m', 't', 'w', 'th', 'f']; // Monday through Friday
+            const weeks = [1, 2, 3, 4, 5]; // Week numbers
+            
+            let currentDate = 1;
+            let currentWeek = 0;
+            let currentDay = calendarStartDay;
+            
+            // Skip weekends at the start of month if needed
+            if (startDayOfWeek === 0 || startDayOfWeek === 6) {
+                // If month starts on weekend, start from Monday of that week
+                if (startDayOfWeek === 0) { // Sunday
+                    currentDate = 2; // Start on Monday (2nd if 1st is Sunday)
+                } else { // Saturday
+                    currentDate = 3; // Start on Monday (3rd if 1st is Saturday)
+                }
+                currentDay = 0; // Monday
+            }
+            
+            // Fill the calendar dates starting from the correct day
+            while (currentDate <= daysInMonth && currentWeek < 5) {
+                if (currentDay < 5) { // Monday through Friday only
+                    const dayCode = weekPattern[currentDay];
+                    const weekNum = weeks[currentWeek];
+                    
+                    // Update the date field with full date format M/D/YYYY
+                    const dateField = document.getElementById(`date-${dayCode}${weekNum}`);
+                    if (dateField) {
+                        dateField.textContent = `${month}/${currentDate}/${year}`;
+                    }
+                    
+                    currentDate++;
+                }
+                
+                currentDay++;
+                
+                // Move to next week after Friday or if we hit weekend
+                if (currentDay >= 7) {
+                    currentDay = 0;
+                    currentWeek++;
+                    
+                    // Skip weekend days (Saturday and Sunday)
+                    if (currentDate <= daysInMonth) {
+                        currentDate += 2; // Skip Saturday and Sunday
+                    }
+                }
+            }
+        }
+        
+        // Add event listeners for month/year changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const monthSelect = document.getElementById('schedule-month');
+            const yearInput = document.getElementById('schedule-year');
+            
+            if (monthSelect) {
+                monthSelect.addEventListener('change', updateTimePeriod);
+            }
+            if (yearInput) {
+                yearInput.addEventListener('change', updateTimePeriod);
+            }
+        });
+        
+        function autoFillSchedule() {
+            const startTime = document.getElementById('start-time').value;
+            const lunchOut = document.getElementById('lunch-out').value;
+            const lunchIn = document.getElementById('lunch-in').value;
+            const endTime = document.getElementById('end-time').value;
+            const month = parseInt(document.getElementById('schedule-month').value);
+            const year = parseInt(document.getElementById('schedule-year').value);
+            
+            if (!startTime || !lunchOut || !lunchIn || !endTime) {
+                alert('Please fill in all time fields before auto-filling.');
+                return;
+            }
+            
+            if (!month || !year) {
+                alert('Please select a month and year first.');
+                return;
+            }
+            
+            // Clear only the time inputs, not the dates
+            clearTimesOnly();
+            
+            // Find what day of the week the month starts on
+            const firstDay = new Date(year, month - 1, 1);
+            const startDayOfWeek = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            
+            // Convert to our calendar format (0 = Monday, 1 = Tuesday, etc.)
+            let calendarStartDay;
+            if (startDayOfWeek === 0) { // Sunday
+                calendarStartDay = 6; // Will be handled as weekend, skip to Monday
+            } else {
+                calendarStartDay = startDayOfWeek - 1; // Convert to 0-based Monday start
+            }
+            
+            // Get number of days in the selected month
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // Static calendar mapping
+            const weekPattern = ['m', 't', 'w', 'th', 'f']; // Monday through Friday
+            const weeks = [1, 2, 3, 4, 5]; // Week numbers
+            
+            let currentDate = 1;
+            let currentWeek = 0;
+            let currentDay = calendarStartDay;
+            
+            // Skip weekends at the start of month if needed
+            if (startDayOfWeek === 0 || startDayOfWeek === 6) {
+                // If month starts on weekend, start from Monday of that week
+                if (startDayOfWeek === 0) { // Sunday
+                    currentDate = 2; // Start on Monday (2nd if 1st is Sunday)
+                } else { // Saturday
+                    currentDate = 3; // Start on Monday (3rd if 1st is Saturday)
+                }
+                currentDay = 0; // Monday
+            }
+            
+            // Fill the calendar starting from the correct day
+            while (currentDate <= daysInMonth && currentWeek < 5) {
+                if (currentDay < 5) { // Monday through Friday only
+                    const dayCode = weekPattern[currentDay];
+                    const weekNum = weeks[currentWeek];
+                    
+                    // Fill the time inputs for this day
+                    const timeIn1 = document.querySelector(`[name="time_in_1_${dayCode}${weekNum}"]`);
+                    const timeOut1 = document.querySelector(`[name="time_out_1_${dayCode}${weekNum}"]`);
+                    const timeIn2 = document.querySelector(`[name="time_in_2_${dayCode}${weekNum}"]`);
+                    const timeOut2 = document.querySelector(`[name="time_out_2_${dayCode}${weekNum}"]`);
+                    
+                    if (timeIn1) timeIn1.value = startTime;
+                    if (timeOut1) timeOut1.value = lunchOut;
+                    if (timeIn2) timeIn2.value = lunchIn;
+                    if (timeOut2) timeOut2.value = endTime;
+                    
+                    // Calculate hours for this day
+                    if (timeIn1) calculateHours(timeIn1);
+                    
+                    currentDate++;
+                }
+                
+                currentDay++;
+                
+                // Move to next week after Friday or if we hit weekend
+                if (currentDay >= 7) {
+                    currentDay = 0;
+                    currentWeek++;
+                    
+                    // Skip weekend days (Saturday and Sunday)
+                    if (currentDate <= daysInMonth) {
+                        currentDate += 2; // Skip Saturday and Sunday
+                    }
+                }
+            }
+            
+            showTimesheetStatus('Schedule auto-filled for weekdays only!', false);
+        }
+        
+        function clearTimesOnly() {
+            const inputs = document.querySelectorAll('#timesheet-body input');
+            inputs.forEach(input => {
+                if (!input.readOnly) {
+                    input.value = '';
+                }
+            });
+            updateTotalDays();
+        }
+        
+        function clearSchedule() {
+            const inputs = document.querySelectorAll('#timesheet-body input');
+            inputs.forEach(input => {
+                if (!input.readOnly) {
+                    input.value = '';
+                }
+            });
+            
+            // Also clear the calendar dates
+            clearCalendarDates();
+            
+            updateTotalDays();
+            showTimesheetStatus('All times and dates cleared.', false);
+        }
+        
+        function showTimesheetStatus(message, isError = false) {
+            const statusDiv = document.getElementById('timesheetStatusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        function calculateHours(input) {
+            const row = input.closest('tr');
+            const timeIn1 = row.querySelector('[name*="time_in_1"]')?.value;
+            const timeOut1 = row.querySelector('[name*="time_out_1"]')?.value;
+            const timeIn2 = row.querySelector('[name*="time_in_2"]')?.value;
+            const timeOut2 = row.querySelector('[name*="time_out_2"]')?.value;
+            const totalHoursInput = row.querySelector('[name*="total_hours"]');
+            
+            let totalHours = 0;
+            
+            // Calculate morning hours
+            if (timeIn1 && timeOut1) {
+                const start = new Date(`2000-01-01 ${timeIn1}`);
+                const end = new Date(`2000-01-01 ${timeOut1}`);
+                totalHours += (end - start) / (1000 * 60 * 60);
+            }
+            
+            // Calculate afternoon hours
+            if (timeIn2 && timeOut2) {
+                const start = new Date(`2000-01-01 ${timeIn2}`);
+                const end = new Date(`2000-01-01 ${timeOut2}`);
+                totalHours += (end - start) / (1000 * 60 * 60);
+            }
+            
+            // Special logic for standard 8-hour workday
+            // If they have both morning and afternoon times, check if it's a standard workday
+            if (timeIn1 && timeOut1 && timeIn2 && timeOut2) {
+                const dayStart = new Date(`2000-01-01 ${timeIn1}`);
+                const dayEnd = new Date(`2000-01-01 ${timeOut2}`);
+                const totalDaySpan = (dayEnd - dayStart) / (1000 * 60 * 60);
+                
+                // If the total day span is 8+ hours and they worked at least 7.5 hours,
+                // credit them with 8 hours (accounting for lunch break)
+                if (totalDaySpan >= 8 && totalHours >= 7.5) {
+                    totalHours = 8.00;
+                }
+            }
+            
+            if (totalHours > 0) {
+                totalHoursInput.value = totalHours.toFixed(2);
+            } else {
+                totalHoursInput.value = '';
+            }
+            
+            updateTotalDays();
+        }
+        
+        function updateTotalDays() {
+            const hoursInputs = document.querySelectorAll('[name*="total_hours"]');
+            let totalDays = 0;
+            
+            hoursInputs.forEach(input => {
+                if (input.value && parseFloat(input.value) > 0) {
+                    totalDays++;
+                }
+            });
+            
+            document.getElementById('total-days').textContent = totalDays;
+        }
+        
+        function clearTimesheet() {
+            const inputs = document.querySelectorAll('#timesheet-tab input');
+            inputs.forEach(input => {
+                if (!input.readOnly) {
+                    input.value = '';
+                }
+            });
+            
+            // Clear signatures
+            clearEmployeeSignature();
+            clearSupervisorSignature();
+            
+            // Also clear the calendar dates
+            clearCalendarDates();
+            
+            updateTotalDays();
+        }
+        
+        function downloadTimesheetPDF() {
+            // Collect all form data from the timesheet
+            const formData = {};
+            
+            // Employee info
+            formData.emp_name = document.querySelector('[name="emp_name"]')?.value || '';
+            formData.position = document.querySelector('[name="position"]')?.value || '';
+            formData.emp_number = document.querySelector('[name="emp_number"]')?.value || '';
+            formData.time_period = document.querySelector('[name="time_period"]')?.value || '';
+            
+            // Collect all timesheet data
+            const inputs = document.querySelectorAll('#timesheet-body input');
+            inputs.forEach(input => {
+                if (input.name) {
+                    formData[input.name] = input.value || '';
+                }
+            });
+            
+            // Collect date values from the date columns
+            const dateFields = document.querySelectorAll('.date-column');
+            dateFields.forEach(field => {
+                if (field.id && field.textContent.trim()) {
+                    formData[field.id.replace('date-', 'date_')] = field.textContent.trim();
+                }
+            });
+            
+            // Collect signature data
+            const employeeSignature = document.getElementById('employee-signature-image');
+            const supervisorSignature = document.getElementById('supervisor-signature-image');
+            
+            if (employeeSignature.style.display !== 'none' && employeeSignature.src) {
+                formData.employee_signature = employeeSignature.src;
+            }
+            
+            if (supervisorSignature.style.display !== 'none' && supervisorSignature.src) {
+                formData.supervisor_signature = supervisorSignature.src;
+            }
+            
+            // Calculate total days worked
+            let totalDays = 0;
+            for (const key in formData) {
+                if (key.startsWith('total_hours_') && formData[key] && formData[key].trim()) {
+                    try {
+                        const hours = parseFloat(formData[key]);
+                        if (hours > 0) {
+                            totalDays++;
+                        }
+                    } catch (e) {
+                        // Ignore parsing errors
+                    }
+                }
+            }
+            formData.total_days = totalDays.toString();
+            
+            // Show loading indicator
+            const statusDiv = document.getElementById('timesheetStatusMessage');
+            statusDiv.innerHTML = '<div class="spinner"></div> Generating PDF...';
+            statusDiv.className = 'status-message status-success';
+            statusDiv.style.display = 'block';
+            
+            // Send data to server for PDF generation
+            fetch('/preview-timesheet-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Get filename from header or generate one
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = 'timesheet.pdf';
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                        if (filenameMatch && filenameMatch[1]) {
+                            filename = filenameMatch[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    // Convert response to blob and trigger download
+                    return response.blob().then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        showTimesheetStatus('Timesheet PDF downloaded successfully!', false);
+                    });
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Failed to generate PDF');
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showTimesheetStatus('Error generating PDF: ' + error.message, true);
+            });
+        }
+        
+        // Signature functionality
+        let currentSignatureType = null; // 'employee' or 'supervisor'
+        let isDrawing = false;
+        let canvas = null;
+        let ctx = null;
+        
+        function openEmployeeSignature() {
+            currentSignatureType = 'employee';
+            document.getElementById('signatureModalTitle').textContent = 'Employee Signature';
+            openSignatureModal();
+        }
+        
+        function openSupervisorSignature() {
+            currentSignatureType = 'supervisor';
+            document.getElementById('signatureModalTitle').textContent = 'Supervisor Signature';
+            openSignatureModal();
+        }
+        
+        function openSignatureModal() {
+            const modal = document.getElementById('signatureModal');
+            modal.style.display = 'block';
+            
+            // Initialize canvas
+            canvas = document.getElementById('signatureCanvas');
+            ctx = canvas.getContext('2d');
+            setupCanvas();
+            
+            // Reset tabs
+            showSignatureTab('draw');
+        }
+        
+        function closeSignatureModal() {
+            const modal = document.getElementById('signatureModal');
+            modal.style.display = 'none';
+            clearCanvas();
+            clearUploadPreview();
+        }
+        
+        function showSignatureTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.signature-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.signature-tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+        
+        function setupCanvas() {
+            if (!canvas || !ctx) return;
+            
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 
+                                            e.type === 'touchmove' ? 'mousemove' : 'mouseup', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+        
+        function clearCanvas() {
+            if (canvas && ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+        
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+        
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('File size must be less than 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('uploadPreviewImage');
+                img.src = e.target.result;
+                document.getElementById('uploadPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function clearUploadPreview() {
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('signatureFile').value = '';
+        }
+        
+        function saveSignature() {
+            const activeTab = document.querySelector('.signature-tab-content.active').id;
+            let signatureData = null;
+            
+            if (activeTab === 'draw-tab') {
+                // Check if canvas has content
+                if (isCanvasEmpty()) {
+                    alert('Please draw your signature first.');
+                    return;
+                }
+                signatureData = canvas.toDataURL();
+            } else if (activeTab === 'upload-tab') {
+                // Check if image is uploaded
+                const preview = document.getElementById('uploadPreview');
+                if (preview.style.display === 'none') {
+                    alert('Please upload a signature image first.');
+                    return;
+                }
+                signatureData = document.getElementById('uploadPreviewImage').src;
+            }
+            
+            if (signatureData) {
+                displaySignature(currentSignatureType, signatureData);
+                closeSignatureModal();
+            }
+        }
+        
+        function isCanvasEmpty() {
+            const blank = document.createElement('canvas');
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+            return canvas.toDataURL() === blank.toDataURL();
+        }
+        
+        function displaySignature(type, signatureData) {
+            const imageElement = document.getElementById(`${type}-signature-image`);
+            const placeholder = document.getElementById(`${type}-signature-placeholder`);
+            
+            imageElement.src = signatureData;
+            imageElement.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+        
+        function clearEmployeeSignature() {
+            clearSignatureDisplay('employee');
+        }
+        
+        function clearSupervisorSignature() {
+            clearSignatureDisplay('supervisor');
+        }
+        
+        function clearSignatureDisplay(type) {
+            const imageElement = document.getElementById(`${type}-signature-image`);
+            const placeholder = document.getElementById(`${type}-signature-placeholder`);
+            
+            imageElement.style.display = 'none';
+            imageElement.src = '';
+            placeholder.style.display = 'block';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('signatureModal');
+            if (event.target === modal) {
+                closeSignatureModal();
+            }
+        }
+        
+        // Existing Functions
+        function collectFormData() {
+            const formData = {};
+            const inputs = document.querySelectorAll('input[name]');
+            
+            inputs.forEach(input => {
+                formData[input.name] = input.value || '';
+            });
+            
+            return formData;
+        }
+        
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+            statusDiv.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoading(show = true) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+        
+        async function downloadPDF() {
+            try {
+                showLoading(true);
+                const formData = collectFormData();
+                
+                const response = await fetch('/preview-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `FuelReport_${formData.name || 'Unknown'}_${formData.month || ''}_${formData.year || ''}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    showStatus('PDF downloaded successfully!');
+                } else {
+                    const errorData = await response.json();
+                    showStatus(errorData.message || 'Error downloading PDF', true);
+                }
+            } catch (error) {
+                showStatus(`Error downloading PDF: ${error.message}`, true);
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function openEmail() {
+            // Open Office 365 portal in a new tab
+            window.open('https://portal.office.com', '_blank');
+        }
+        
+        function showDownloadOption(downloadUrl, emailError) {
+            const statusDiv = document.getElementById('statusMessage');
+            
+            // Create download button
+            const downloadBtn = document.createElement('button');
+            downloadBtn.textContent = 'Download PDF';
+            downloadBtn.className = 'btn btn-primary';
+            downloadBtn.style.marginTop = '10px';
+            downloadBtn.onclick = () => {
+                window.location.href = downloadUrl;
+            };
+            
+            // Create email instructions
+            const instructions = document.createElement('div');
+            instructions.style.marginTop = '10px';
+            instructions.style.padding = '10px';
+            instructions.style.backgroundColor = '#e3f2fd';
+            instructions.style.borderRadius = '4px';
+            instructions.style.fontSize = '12px';
+            instructions.innerHTML = `
+                <strong>Email Failed - Manual Steps:</strong><br>
+                1. Click "Download PDF" above<br>
+                2. Open your email client<br>
+                3. Attach the downloaded PDF<br>
+                4. Send to: ${document.querySelector('meta[name="recipient"]')?.content || 'jhowell@ocboe.com'}<br>
+                <br>
+                <details style="margin-top: 5px;">
+                    <summary>Technical Error Details</summary>
+                    <code style="font-size: 10px;">${emailError}</code>
+                </details>
+            `;
+            
+            statusDiv.appendChild(downloadBtn);
+            statusDiv.appendChild(instructions);
+        }
+        
+        function clearForm() {
+            const inputs = document.querySelectorAll('input[name]');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+        }
+
+        function clearTimesWhenCodeEntered(codesInput) {
+            const row = codesInput.closest('tr');
+            const timeInputs = row.querySelectorAll('input[type="time"]');
+            // Note: We do NOT clear the hours input - preserve hours worked even when codes are entered
+            
+            if (codesInput.value.trim() !== '') {
+                // Clear all time inputs in this row
+                timeInputs.forEach(input => {
+                    input.value = '';
+                });
+                // Note: Intentionally NOT clearing the total hours - this allows for holiday/sick pay etc.
+                // The hours worked field should be preserved when entering codes like H, V, S, etc.
+            }
+            
+            // Recalculate total days
+            updateTotalDays();
+        }
+    </script>
+</body>
+</html>
