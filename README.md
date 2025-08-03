@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="static/logo.png" alt="Obion County Schools" width="400" height="150">
+  <img src="static/logo.png" alt="Obion County Schools" width="400">
   
   # FuelTime
   
