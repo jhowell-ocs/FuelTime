@@ -37,9 +37,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application files
 COPY . .
 
-# Make test script executable
-RUN chmod +x test-wkhtmltopdf.sh
-
 # Create necessary directories with proper permissions
 RUN mkdir -p /app/temp /app/static && \
     chmod -R 777 /app/temp && \

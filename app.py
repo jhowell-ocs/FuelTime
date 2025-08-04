@@ -597,6 +597,9 @@ def preview_timesheet_pdf():
         total_days = 0
         total_hours = 0.0
         
+        # Debug logging
+        print(f"Debug: Processing timesheet data for total hours calculation")
+        
         for key, value in form_data.items():
             if key.startswith('total_hours_') and value and value.strip():
                 try:
@@ -604,11 +607,17 @@ def preview_timesheet_pdf():
                     if hours > 0:
                         total_days += 1
                         total_hours += hours
+                        print(f"Debug: Found hours for {key}: {hours}")
                 except (ValueError, TypeError):
+                    print(f"Debug: Invalid hours value for {key}: {value}")
                     pass
+        
+        print(f"Debug: Total calculated - Days: {total_days}, Hours: {total_hours}")
         
         timesheet_data['total_days'] = str(total_days)
         timesheet_data['total_hours_all'] = f"{total_hours:.2f}"
+        
+        print(f"Debug: Final timesheet data total_hours_all: {timesheet_data['total_hours_all']}")
         
         pdf_path = generate_timesheet_pdf(timesheet_data)
         
@@ -626,6 +635,124 @@ def preview_timesheet_pdf():
             'success': False,
             'message': f'Error generating timesheet PDF: {str(e)}'
         }), 500
+
+@app.route('/debug/environment')
+def debug_environment():
+    """Debug endpoint to check environment and JavaScript execution"""
+    import os
+    import platform
+    import sys
+    
+    debug_info = {
+        'platform': platform.platform(),
+        'python_version': sys.version,
+        'container_mode': os.path.exists('/app'),
+        'display_env': os.environ.get('DISPLAY', 'Not set'),
+        'temp_dir': TEMP_DIR,
+        'wkhtmltopdf_installed': WKHTMLTOPDF_INSTALLED,
+        'timezone': os.environ.get('TZ', 'Not set'),
+    }
+    
+    # Test JavaScript execution capability
+    try:
+        import subprocess
+        result = subprocess.run(['node', '--version'], capture_output=True, text=True)
+        debug_info['node_available'] = result.stdout.strip() if result.returncode == 0 else False
+    except:
+        debug_info['node_available'] = False
+    
+    return f"""
+    <h1>Environment Debug Info</h1>
+    <pre>{chr(10).join(f"{k}: {v}" for k, v in debug_info.items())}</pre>
+    
+    <h2>Test Form with JavaScript</h2>
+    <div style="border: 1px solid #ccc; padding: 20px; margin: 20px 0;">
+        <label>Time In: <input type="time" id="time_in" onchange="testCalculateHours()"></label><br><br>
+        <label>Time Out: <input type="time" id="time_out" onchange="testCalculateHours()"></label><br><br>
+        <label>Total Hours: <input type="text" id="total_hours" readonly></label><br><br>
+        <label>Code: <input type="text" id="code" oninput="testClearTimes()"></label>
+    </div>
+    
+    <script>
+    function testCalculateHours() {{
+        const timeIn = document.getElementById('time_in').value;
+        const timeOut = document.getElementById('time_out').value;
+        const totalHours = document.getElementById('total_hours');
+        
+        if (timeIn && timeOut) {{
+            try {{
+                const start = new Date(`2000-01-01 ${{timeIn}}`);
+                const end = new Date(`2000-01-01 ${{timeOut}}`);
+                const hours = (end - start) / (1000 * 60 * 60);
+                totalHours.value = hours > 0 ? hours.toFixed(2) : '';
+                console.log('Debug: Calculated hours:', hours);
+            }} catch (error) {{
+                console.error('Debug: Error calculating hours:', error);
+                totalHours.value = 'ERROR';
+            }}
+        }}
+    }}
+    
+    function testClearTimes() {{
+        const code = document.getElementById('code').value;
+        const timeIn = document.getElementById('time_in');
+        const timeOut = document.getElementById('time_out');
+        const totalHours = document.getElementById('total_hours');
+        
+        if (code.trim() !== '') {{
+            const currentHours = totalHours.value;
+            timeIn.value = '';
+            timeOut.value = '';
+            
+            // Preserve hours or set default
+            if (!currentHours && ['H', 'V', 'S'].includes(code.trim().toUpperCase())) {{
+                totalHours.value = '8.00';
+            }}
+            console.log('Debug: Code entered:', code, 'Hours preserved/set:', totalHours.value);
+        }}
+    }}
+    </script>
+    """
+
+@app.route('/debug/test-timesheet-data', methods=['POST'])
+def debug_test_timesheet_data():
+    """Debug endpoint to test timesheet data processing"""
+    try:
+        form_data = request.json or {}
+        
+        # Process the data the same way as the main endpoint
+        total_days = 0
+        total_hours = 0.0
+        hours_breakdown = {}
+        
+        print(f"Debug: Received form data keys: {list(form_data.keys())}")
+        
+        for key, value in form_data.items():
+            if key.startswith('total_hours_') and value and value.strip():
+                try:
+                    hours = float(value)
+                    if hours > 0:
+                        total_days += 1
+                        total_hours += hours
+                        hours_breakdown[key] = hours
+                        print(f"Debug: Valid hours for {key}: {hours}")
+                except (ValueError, TypeError) as e:
+                    print(f"Debug: Invalid hours value for {key}: {value} - Error: {e}")
+                    hours_breakdown[key] = f"INVALID: {value}"
+        
+        result = {
+            'success': True,
+            'total_days': total_days,
+            'total_hours': total_hours,
+            'hours_breakdown': hours_breakdown,
+            'form_data_sample': {k: v for k, v in list(form_data.items())[:10]},  # First 10 items
+            'total_form_fields': len(form_data)
+        }
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

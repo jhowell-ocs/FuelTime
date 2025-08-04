@@ -1351,41 +1351,67 @@
             const timeIn2 = row.querySelector('[name*="time_in_2"]')?.value;
             const timeOut2 = row.querySelector('[name*="time_out_2"]')?.value;
             const totalHoursInput = row.querySelector('[name*="total_hours"]');
+            const codesInput = row.querySelector('[name*="codes"]');
+            
+            // Don't recalculate if there's already a code entered (preserve manual hours)
+            if (codesInput && codesInput.value.trim() !== '') {
+                return;
+            }
             
             let totalHours = 0;
             
             // Calculate morning hours
             if (timeIn1 && timeOut1) {
-                const start = new Date(`2000-01-01 ${timeIn1}`);
-                const end = new Date(`2000-01-01 ${timeOut1}`);
-                totalHours += (end - start) / (1000 * 60 * 60);
+                try {
+                    const start = new Date(`2000-01-01 ${timeIn1}`);
+                    const end = new Date(`2000-01-01 ${timeOut1}`);
+                    const morningHours = (end - start) / (1000 * 60 * 60);
+                    if (morningHours > 0) {
+                        totalHours += morningHours;
+                    }
+                } catch (error) {
+                    console.warn('Error calculating morning hours:', error);
+                }
             }
             
             // Calculate afternoon hours
             if (timeIn2 && timeOut2) {
-                const start = new Date(`2000-01-01 ${timeIn2}`);
-                const end = new Date(`2000-01-01 ${timeOut2}`);
-                totalHours += (end - start) / (1000 * 60 * 60);
+                try {
+                    const start = new Date(`2000-01-01 ${timeIn2}`);
+                    const end = new Date(`2000-01-01 ${timeOut2}`);
+                    const afternoonHours = (end - start) / (1000 * 60 * 60);
+                    if (afternoonHours > 0) {
+                        totalHours += afternoonHours;
+                    }
+                } catch (error) {
+                    console.warn('Error calculating afternoon hours:', error);
+                }
             }
             
             // Special logic for standard 8-hour workday
             // If they have both morning and afternoon times, check if it's a standard workday
             if (timeIn1 && timeOut1 && timeIn2 && timeOut2) {
-                const dayStart = new Date(`2000-01-01 ${timeIn1}`);
-                const dayEnd = new Date(`2000-01-01 ${timeOut2}`);
-                const totalDaySpan = (dayEnd - dayStart) / (1000 * 60 * 60);
-                
-                // If the total day span is 8+ hours and they worked at least 7.5 hours,
-                // credit them with 8 hours (accounting for lunch break)
-                if (totalDaySpan >= 8 && totalHours >= 7.5) {
-                    totalHours = 8.00;
+                try {
+                    const dayStart = new Date(`2000-01-01 ${timeIn1}`);
+                    const dayEnd = new Date(`2000-01-01 ${timeOut2}`);
+                    const totalDaySpan = (dayEnd - dayStart) / (1000 * 60 * 60);
+                    
+                    // If the total day span is 8+ hours and they worked at least 7.5 hours,
+                    // credit them with 8 hours (accounting for lunch break)
+                    if (totalDaySpan >= 8 && totalHours >= 7.5) {
+                        totalHours = 8.00;
+                    }
+                } catch (error) {
+                    console.warn('Error calculating day span:', error);
                 }
             }
             
-            if (totalHours > 0) {
-                totalHoursInput.value = totalHours.toFixed(2);
-            } else {
-                totalHoursInput.value = '';
+            if (totalHoursInput) {
+                if (totalHours > 0) {
+                    totalHoursInput.value = totalHours.toFixed(2);
+                } else {
+                    totalHoursInput.value = '';
+                }
             }
             
             updateTotalDays();
@@ -1475,6 +1501,16 @@
                 }
             }
             formData.total_days = totalDays.toString();
+            
+            // Debug: Log the form data being sent
+            console.log('Debug: Form data being sent to server:', formData);
+            
+            // Debug: Specifically log all hours fields
+            const hoursFields = Object.keys(formData).filter(key => key.startsWith('total_hours_'));
+            console.log('Debug: Hours fields found:', hoursFields);
+            hoursFields.forEach(field => {
+                console.log(`Debug: ${field} = ${formData[field]}`);
+            });
             
             // Show loading indicator
             const statusDiv = document.getElementById('timesheetStatusMessage');
@@ -1870,15 +1906,37 @@
         function clearTimesWhenCodeEntered(codesInput) {
             const row = codesInput.closest('tr');
             const timeInputs = row.querySelectorAll('input[type="time"]');
-            // Note: We do NOT clear the hours input - preserve hours worked even when codes are entered
+            const hoursInput = row.querySelector('[name*="total_hours"]');
             
             if (codesInput.value.trim() !== '') {
+                // Store the current hours value before clearing times
+                const currentHours = hoursInput ? hoursInput.value : '';
+                
                 // Clear all time inputs in this row
                 timeInputs.forEach(input => {
                     input.value = '';
                 });
-                // Note: Intentionally NOT clearing the total hours - this allows for holiday/sick pay etc.
-                // The hours worked field should be preserved when entering codes like H, V, S, etc.
+                
+                // Preserve the hours worked - this is important for codes like H, V, S, etc.
+                // that should maintain the hours while clearing the actual time entries
+                if (hoursInput && currentHours) {
+                    hoursInput.value = currentHours;
+                }
+                
+                // If no hours were set and this is a code that typically represents work,
+                // set a default of 8 hours for common codes
+                if (hoursInput && !currentHours) {
+                    const code = codesInput.value.trim().toUpperCase();
+                    if (['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL'].includes(code)) {
+                        hoursInput.value = '8.00';
+                    }
+                }
+            } else {
+                // If codes are cleared, recalculate hours based on times
+                const firstTimeInput = timeInputs[0];
+                if (firstTimeInput) {
+                    calculateHours(firstTimeInput);
+                }
             }
             
             // Recalculate total days
