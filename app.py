@@ -495,7 +495,17 @@ def submit_timesheet():
                 try:
                     hours = float(value)
                     if hours > 0:
-                        total_days += 1
+                        # Extract the day identifier from the hours field name (e.g., 'm1', 't2', etc.)
+                        day_id = key.replace('total_hours_', '')
+                        codes_key = 'codes_' + day_id
+                        code = form_data.get(codes_key, '').strip().upper()
+                        
+                        # List of codes that should NOT count as worked days
+                        non_work_codes = ['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL', 'PD', 'PROFESSIONAL DEVELOPMENT']
+                        
+                        # Only count as worked day if no non-work code is present
+                        if code not in non_work_codes:
+                            total_days += 1
                 except (ValueError, TypeError):
                     pass
         
@@ -605,9 +615,25 @@ def preview_timesheet_pdf():
                 try:
                     hours = float(value)
                     if hours > 0:
-                        total_days += 1
+                        # Extract the day identifier from the hours field name (e.g., 'm1', 't2', etc.)
+                        day_id = key.replace('total_hours_', '')
+                        codes_key = 'codes_' + day_id
+                        code = form_data.get(codes_key, '').strip().upper()
+                        
+                        # List of codes that should NOT count as worked days
+                        non_work_codes = ['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL', 'PD', 'PROFESSIONAL DEVELOPMENT']
+                        
+                        # Always add to total hours
                         total_hours += hours
-                        print(f"Debug: Found hours for {key}: {hours}")
+                        print(f"Debug: Found hours for {key}: {hours}, code: {code}")
+                        
+                        # Only count as worked day if no non-work code is present
+                        if code not in non_work_codes:
+                            total_days += 1
+                            print(f"Debug: Counted as worked day: {key}")
+                        else:
+                            print(f"Debug: Excluded from worked days due to code '{code}': {key}")
+                            
                 except (ValueError, TypeError):
                     print(f"Debug: Invalid hours value for {key}: {value}")
                     pass
@@ -732,10 +758,26 @@ def debug_test_timesheet_data():
                 try:
                     hours = float(value)
                     if hours > 0:
-                        total_days += 1
+                        # Extract the day identifier from the hours field name (e.g., 'm1', 't2', etc.)
+                        day_id = key.replace('total_hours_', '')
+                        codes_key = 'codes_' + day_id
+                        code = form_data.get(codes_key, '').strip().upper()
+                        
+                        # List of codes that should NOT count as worked days
+                        non_work_codes = ['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL', 'PD', 'PROFESSIONAL DEVELOPMENT']
+                        
+                        # Always add to total hours
                         total_hours += hours
                         hours_breakdown[key] = hours
-                        print(f"Debug: Valid hours for {key}: {hours}")
+                        print(f"Debug: Valid hours for {key}: {hours}, code: {code}")
+                        
+                        # Only count as worked day if no non-work code is present
+                        if code not in non_work_codes:
+                            total_days += 1
+                            print(f"Debug: Counted as worked day: {key}")
+                        else:
+                            print(f"Debug: Excluded from worked days due to code '{code}': {key}")
+                            
                 except (ValueError, TypeError) as e:
                     print(f"Debug: Invalid hours value for {key}: {value} - Error: {e}")
                     hours_breakdown[key] = f"INVALID: {value}"

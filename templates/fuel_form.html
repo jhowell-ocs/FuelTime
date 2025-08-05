@@ -1423,7 +1423,18 @@
             
             hoursInputs.forEach(input => {
                 if (input.value && parseFloat(input.value) > 0) {
-                    totalDays++;
+                    // Check if this row has a code that represents non-work days
+                    const row = input.closest('tr');
+                    const codesInput = row.querySelector('[name*="codes"]');
+                    const code = codesInput ? codesInput.value.trim().toUpperCase() : '';
+                    
+                    // List of codes that should NOT count as worked days
+                    const nonWorkCodes = ['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL', 'PD', 'PROFESSIONAL DEVELOPMENT'];
+                    
+                    // Only count as worked day if no non-work code is present
+                    if (!nonWorkCodes.includes(code)) {
+                        totalDays++;
+                    }
                 }
             });
             
@@ -1493,7 +1504,18 @@
                     try {
                         const hours = parseFloat(formData[key]);
                         if (hours > 0) {
-                            totalDays++;
+                            // Extract the day identifier from the hours field name (e.g., 'm1', 't2', etc.)
+                            const dayId = key.replace('total_hours_', '');
+                            const codesKey = 'codes_' + dayId;
+                            const code = formData[codesKey] ? formData[codesKey].trim().toUpperCase() : '';
+                            
+                            // List of codes that should NOT count as worked days
+                            const nonWorkCodes = ['H', 'V', 'S', 'P', 'HOLIDAY', 'VACATION', 'SICK', 'PERSONAL', 'PD', 'PROFESSIONAL DEVELOPMENT'];
+                            
+                            // Only count as worked day if no non-work code is present
+                            if (!nonWorkCodes.includes(code)) {
+                                totalDays++;
+                            }
                         }
                     } catch (e) {
                         // Ignore parsing errors
