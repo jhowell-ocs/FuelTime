@@ -34,7 +34,7 @@ Both forms feature professional PDF generation for official documentation and re
    services:
      fueltime:
        build:
-         context: https://github.com/Obion-County-Board-of-Education/FuelTime.git
+         context: https://github.com/jhowell-ocs/FuelTime.git
          dockerfile: Dockerfile
        container_name: fueltime-app
        ports:
