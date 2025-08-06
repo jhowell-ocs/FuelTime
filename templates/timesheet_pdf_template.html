@@ -142,6 +142,7 @@
         
         .signature-section {
             margin-bottom: 25px;
+            position: relative;
         }
         
         .signature-label {
@@ -153,6 +154,16 @@
             border-bottom: 1px solid black;
             margin-top: 3px;
             height: 20px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        .signature-image {
+            max-width: 150px;
+            max-height: 50px;
+            margin-bottom: 1px;
+            margin-left: 120px;
         }
         
         .codes-section {
@@ -319,19 +330,19 @@
         <div class="signatures">
             <div class="signature-section">
                 <div class="signature-label">Employee Signature</div>
-                {% if form_data.get('employee_signature') %}
-                    <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" style="max-width: 200px; max-height: 60px; border: 1px solid #ccc; margin-top: 5px;">
-                {% else %}
-                    <div class="signature-line"></div>
-                {% endif %}
+                <div class="signature-line">
+                    {% if form_data.get('employee_signature') %}
+                        <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" class="signature-image">
+                    {% endif %}
+                </div>
             </div>
             <div class="signature-section">
                 <div class="signature-label">Supervisor Signature</div>
-                {% if form_data.get('supervisor_signature') %}
-                    <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" style="max-width: 200px; max-height: 60px; border: 1px solid #ccc; margin-top: 5px;">
-                {% else %}
-                    <div class="signature-line"></div>
-                {% endif %}
+                <div class="signature-line">
+                    {% if form_data.get('supervisor_signature') %}
+                        <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" class="signature-image">
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="codes-section">

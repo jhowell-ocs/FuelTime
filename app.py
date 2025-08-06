@@ -253,7 +253,9 @@ def submit_form():
         pdf_path = generate_pdf(form_data)
         
         # Move PDF to a permanent location for download
-        download_filename = f"FuelReport_{form_data.get('name', 'Unknown')}_{form_data.get('month', '')}_{form_data.get('year', '')}.pdf"
+        # Format filename as "Month Fuelsheet Year"
+        formatted_filename = format_fuel_report_filename(form_data.get('month'), form_data.get('year'))
+        download_filename = f"{formatted_filename}.pdf"
         download_path = os.path.join(TEMP_DIR, download_filename)
         
         # Copy the file instead of renaming to avoid cross-device issues
@@ -369,11 +371,14 @@ def preview_pdf():
         form_data = request.json
         pdf_path = generate_pdf(form_data)
         
+        # Format filename as "Month Fuelsheet Year"
+        formatted_filename = format_fuel_report_filename(form_data.get('month'), form_data.get('year'))
+        
         # Return PDF file
         return send_file(
             pdf_path,
             as_attachment=True,
-            download_name=f"FuelReport_{form_data.get('name', 'Unknown')}_{form_data.get('month', '')}_{form_data.get('year', '')}.pdf",
+            download_name=f"{formatted_filename}.pdf",
             mimetype='application/pdf'
         )
         
@@ -515,7 +520,8 @@ def submit_timesheet():
         pdf_path = generate_timesheet_pdf(timesheet_data)
         
         # Move PDF to a permanent location for download
-        download_filename = f"Timesheet_{timesheet_data.get('emp_name', 'Unknown')}_{timesheet_data.get('time_period', '').replace('/', '_').replace(' ', '_')}.pdf"
+        formatted_filename = format_timesheet_filename(timesheet_data.get('time_period', ''))
+        download_filename = f"{formatted_filename}.pdf"
         download_path = os.path.join(TEMP_DIR, download_filename)
         
         # Copy the file instead of renaming to avoid cross-device issues
@@ -647,11 +653,14 @@ def preview_timesheet_pdf():
         
         pdf_path = generate_timesheet_pdf(timesheet_data)
         
+        # Format filename as "Month Timesheet Year"
+        formatted_filename = format_timesheet_filename(timesheet_data.get('time_period', ''))
+        
         # Return PDF file
         return send_file(
             pdf_path,
             as_attachment=True,
-            download_name=f"Timesheet_{timesheet_data.get('emp_name', 'Unknown')}_{timesheet_data.get('time_period', '').replace('/', '_').replace(' ', '_')}.pdf",
+            download_name=f"{formatted_filename}.pdf",
             mimetype='application/pdf'
         )
         
@@ -795,6 +804,77 @@ def debug_test_timesheet_data():
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+def format_timesheet_filename(time_period):
+    """Format timesheet filename as 'Month Timesheet Year' from time period string"""
+    try:
+        if not time_period or not time_period.strip():
+            return "Timesheet"
+        
+        # Parse time period like "2/1/25 - 2/28/25" or "2/1/2025 - 2/28/2025"
+        time_period = time_period.strip()
+        
+        # Extract the first date (start of period)
+        if ' - ' in time_period:
+            start_date = time_period.split(' - ')[0].strip()
+        else:
+            start_date = time_period
+        
+        # Parse the date
+        from datetime import datetime
+        
+        # Try different date formats
+        date_formats = ['%m/%d/%y', '%m/%d/%Y', '%m-%d-%y', '%m-%d-%Y']
+        parsed_date = None
+        
+        for fmt in date_formats:
+            try:
+                parsed_date = datetime.strptime(start_date, fmt)
+                break
+            except ValueError:
+                continue
+        
+        if parsed_date:
+            # Format as "Month Timesheet Year"
+            return f"{parsed_date.strftime('%B')} Timesheet {parsed_date.year}"
+        else:
+            # Fallback if parsing fails
+            return f"Timesheet {time_period.replace('/', '_').replace(' ', '_')}"
+            
+    except Exception:
+        # Ultimate fallback
+        return "Timesheet"
+
+def format_fuel_report_filename(month, year):
+    """Format fuel report filename as 'Month Fuelsheet Year' from month and year"""
+    try:
+        if not month or not year:
+            return "Fuelsheet"
+        
+        # Convert month number to month name
+        from datetime import datetime
+        
+        # Handle month as string or number
+        try:
+            if isinstance(month, str):
+                month_num = int(month)
+            else:
+                month_num = month
+            
+            # Create a date with the given month to get month name
+            month_date = datetime(2000, month_num, 1)
+            month_name = month_date.strftime('%B')
+            
+            # Format as "Month Fuelsheet Year"
+            return f"{month_name} Fuelsheet {year}"
+            
+        except (ValueError, TypeError):
+            # Fallback if month parsing fails
+            return f"Fuelsheet {month}_{year}"
+            
+    except Exception:
+        # Ultimate fallback
+        return "Fuelsheet"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

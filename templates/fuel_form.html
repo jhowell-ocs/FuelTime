@@ -968,8 +968,8 @@
                             <button type="button" class="signature-btn secondary" onclick="clearEmployeeSignature()">Clear</button>
                         </div>
                         <div class="signature-display" id="employee-signature-display">
-                            <canvas id="employee-signature-canvas" style="display: none; border: 1px solid #ccc; width: 300px; height: 100px;"></canvas>
-                            <img id="employee-signature-image" style="display: none; max-width: 300px; max-height: 100px; border: 1px solid #ccc;">
+                            <canvas id="employee-signature-canvas" style="display: none; width: 300px; height: 100px;"></canvas>
+                            <img id="employee-signature-image" style="display: none; max-width: 300px; max-height: 100px;">
                             <div class="signature-placeholder" id="employee-signature-placeholder">Click "Add Signature" to sign</div>
                         </div>
                     </div>
@@ -980,8 +980,8 @@
                             <button type="button" class="signature-btn secondary" onclick="clearSupervisorSignature()">Clear</button>
                         </div>
                         <div class="signature-display" id="supervisor-signature-display">
-                            <canvas id="supervisor-signature-canvas" style="display: none; border: 1px solid #ccc; width: 300px; height: 100px;"></canvas>
-                            <img id="supervisor-signature-image" style="display: none; max-width: 300px; max-height: 100px; border: 1px solid #ccc;">
+                            <canvas id="supervisor-signature-canvas" style="display: none; width: 300px; height: 100px;"></canvas>
+                            <img id="supervisor-signature-image" style="display: none; max-width: 300px; max-height: 100px;">
                             <div class="signature-placeholder" id="supervisor-signature-placeholder">Click "Add Signature" to sign</div>
                         </div>
                     </div>
@@ -1857,10 +1857,31 @@
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
+                    // Format filename as "Month Fuelsheet Year"
+                    function formatFuelReportFilename(month, year) {
+                        if (!month || !year) return 'Fuelsheet.pdf';
+                        
+                        const monthNames = [
+                            'January', 'February', 'March', 'April', 'May', 'June',
+                            'July', 'August', 'September', 'October', 'November', 'December'
+                        ];
+                        
+                        try {
+                            const monthNum = parseInt(month);
+                            if (monthNum >= 1 && monthNum <= 12) {
+                                return `${monthNames[monthNum - 1]} Fuelsheet ${year}.pdf`;
+                            }
+                        } catch (e) {
+                            // Fallback
+                        }
+                        
+                        return `Fuelsheet_${month}_${year}.pdf`;
+                    }
+                    
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = `FuelReport_${formData.name || 'Unknown'}_${formData.month || ''}_${formData.year || ''}.pdf`;
+                    a.download = formatFuelReportFilename(formData.month, formData.year);
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
