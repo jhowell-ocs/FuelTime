@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="recipient" content="jhowell@ocboe.com">
+    <title>Obion County Schools - Forms Portal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    
+    <script>
+        // Tailwind config for custom colors
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007cba',
+                        'primary-dark': '#005a8a',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007cba;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        /* Preserve vertical text for table headers */
+        .rotate-header {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+        }
+        
+        /* Custom scrollbar for tables */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header with Logo -->
+    <div class="bg-white border-b-4 border-primary shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center">
+                {% if logo_base64 %}
+                <img src="{{ logo_base64 }}" alt="Obion County Schools" class="mx-auto h-24 md:h-32 w-auto">
+                {% else %}
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Obion County Schools</h1>
+                {% endif %}
+                <p class="mt-2 text-lg text-gray-600">Administrative Forms Portal</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Tab Navigation -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px" aria-label="Tabs">
+                    <button onclick="switchTab('fuel')" id="fuel-tab" 
+                            class="tab-button w-1/2 py-4 px-6 text-center border-b-2 font-medium text-lg transition-colors duration-150 ease-in-out
+                                   border-primary text-primary bg-blue-50">
+                        <svg class="inline-block w-5 h-5 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Monthly Fuel Report
+                    </button>
+                    <button onclick="switchTab('timesheet')" id="timesheet-tab"
+                            class="tab-button w-1/2 py-4 px-6 text-center border-b-2 font-medium text-lg transition-colors duration-150 ease-in-out
+                                   border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50">
+                        <svg class="inline-block w-5 h-5 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Employee Timesheet
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="status-message" class="hidden mx-6 mt-6"></div>
+            <div id="loading" class="hidden text-center py-8">
+                <div class="spinner mx-auto"></div>
+                <p class="mt-4 text-gray-600">Generating PDF...</p>
+            </div>
+
+            <!-- Fuel Form Tab Content -->
+            <div id="fuel-content" class="tab-content p-6 md:p-8">
+                <form id="fuel-form">
+                    <!-- Form Header Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                        <div class="form-field">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Name:</label>
+                            <input type="text" id="name" name="name" required
+                                   class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-gray-50 focus:outline-none transition-colors text-lg">
+                        </div>
+                        <div class="form-field">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Month:</label>
+                            <select id="month" name="month" required
+                                    class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-gray-50 focus:outline-none transition-colors text-lg bg-white">
+                                <option value="">Select Month</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Year:</label>
+                            <input type="number" id="year" name="year" required min="2020" max="2030"
+                                   class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-gray-50 focus:outline-none transition-colors text-lg">
+                        </div>
+                    </div>
+
+                    <!-- Fuel Table -->
+                    <div class="overflow-x-auto table-container border border-gray-300 rounded-lg shadow-sm">
+                        <table class="w-full border-collapse text-base">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Day</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Vehicle</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Odometer Start</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Odometer End</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Miles Driven</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Gallons</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">MPG</th>
+                                    <th class="border border-gray-300 px-3 py-2 text-center font-bold">Destination</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fuel-tbody" class="bg-white">
+                                <!-- Days 1-31 will be generated by JavaScript -->
+                            </tbody>
+                            <tfoot class="bg-gray-50 font-bold">
+                                <tr>
+                                    <td colspan="4" class="border border-gray-300 px-3 py-3 text-right">Totals:</td>
+                                    <td class="border border-gray-300 px-3 py-3 text-center" id="total-miles">0</td>
+                                    <td class="border border-gray-300 px-3 py-3 text-center" id="total-gallons">0.00</td>
+                                    <td class="border border-gray-300 px-3 py-3 text-center" id="avg-mpg">0.00</td>
+                                    <td class="border border-gray-300 px-3 py-3"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-4 mt-8">
+                        <button type="button" onclick="downloadFuelPDF()" 
+                                class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out text-lg">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download PDF
+                        </button>
+                        <button type="button" onclick="clearFuelForm()" 
+                                class="inline-flex items-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out text-lg">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Timesheet Form Tab Content -->
+            <div id="timesheet-content" class="tab-content hidden p-6 md:p-8">
+                <form id="timesheet-form">
+                    <!-- Employee Info Section -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-primary rounded-lg p-6 mb-8 shadow-sm">
+                        <h3 class="text-2xl font-bold text-primary mb-4 text-center">Employee Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Employee Name:</label>
+                                <input type="text" id="emp_name" name="emp_name" required
+                                       class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-white focus:outline-none transition-colors text-lg bg-white rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Time Period:</label>
+                                <input type="text" id="time_period" name="time_period" required placeholder="e.g., 2/1/25 - 2/28/25"
+                                       class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-white focus:outline-none transition-colors text-lg bg-white rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Job Title:</label>
+                                <input type="text" id="job_title" name="job_title" required
+                                       class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-white focus:outline-none transition-colors text-lg bg-white rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Location:</label>
+                                <input type="text" id="location" name="location" required
+                                       class="w-full px-4 py-2 border-b-2 border-gray-300 focus:border-primary focus:bg-white focus:outline-none transition-colors text-lg bg-white rounded">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Fill Controls -->
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-500 rounded-lg p-6 mb-8 shadow-sm">
+                        <h3 class="text-2xl font-bold text-green-700 mb-4 text-center">Quick Fill</h3>
+                        <div class="flex flex-wrap gap-4 justify-center items-end">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Time In:</label>
+                                <input type="time" id="autofill_time_in"
+                                       class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none transition-colors text-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Time Out:</label>
+                                <input type="time" id="autofill_time_out"
+                                       class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none transition-colors text-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Code:</label>
+                                <input type="text" id="autofill_code" maxlength="3"
+                                       class="w-24 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none transition-colors text-lg text-center uppercase">
+                            </div>
+                            <button type="button" onclick="applyAutoFill()"
+                                    class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out">
+                                Apply to All Days
+                            </button>
+                            <button type="button" onclick="clearAutoFillFields()"
+                                    class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Timesheet Table -->
+                    <div class="overflow-x-auto table-container border border-gray-300 rounded-lg shadow-sm mb-8">
+                        <table class="w-full border-collapse text-base timesheet-table">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Week</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Day</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Date</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Time In</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Time Out</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Total Hours</th>
+                                    <th class="border border-gray-300 px-2 py-2 font-bold">Code</th>
+                                </tr>
+                            </thead>
+                            <tbody id="timesheet-tbody" class="bg-white">
+                                <!-- Timesheet rows will be generated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Totals Display -->
+                    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                            <div class="bg-white rounded-lg p-4 shadow">
+                                <p class="text-sm font-semibold text-gray-600 mb-1">Total Days Worked</p>
+                                <p id="total-days-display" class="text-3xl font-bold text-primary">0</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow">
+                                <p class="text-sm font-semibold text-gray-600 mb-1">Total Hours</p>
+                                <p id="total-hours-display" class="text-3xl font-bold text-primary">0.00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code Reference -->
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 mb-8">
+                        <h3 class="text-lg font-bold text-blue-900 mb-3">Code Reference:</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>H:</strong> Holiday</div>
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>V:</strong> Vacation</div>
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>S:</strong> Sick</div>
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>P:</strong> Personal</div>
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>PD:</strong> Professional Development</div>
+                            <div class="bg-white rounded p-2 shadow-sm"><strong>NW:</strong> Non-Work Day</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-4">
+                        <button type="button" onclick="downloadTimesheetPDF()"
+                                class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out text-lg">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download PDF
+                        </button>
+                        <button type="button" onclick="clearTimesheetForm()"
+                                class="inline-flex items-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg shadow-md transition-colors duration-150 ease-in-out text-lg">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm text-gray-600">
+            <p>Obion County Schools &copy; {{ current_year }}</p>
+            <p class="mt-1">Version {{ version }}</p>
+        </div>
+    </div>
+
+    <script>
+        // [ORIGINAL JAVASCRIPT CODE WILL GO HERE - keeping all existing functionality]
+        // This is a placeholder comment - I'll need to see the full JavaScript to preserve it
+    </script>
+</body>
+</html>

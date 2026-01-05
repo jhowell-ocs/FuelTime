@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="recipient" content="jhowell@ocboe.com">
     <title>Obion County Schools - Forms Portal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007cba',
+                        'primary-dark': '#005a8a',
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -727,56 +743,103 @@
         }
     </style>
 </head>
-<body>
-    <!-- Logo Section -->
-    <div class="logo-section">
-        {% if logo_base64 %}
-            <img src="{{ logo_base64 }}" alt="FuelTime Logo" height="200" style="max-width: 100%; object-fit: contain;">
-        {% else %}
-            <div style="text-align: center; padding: 75px; color: #666;">
-                FuelTime Logo
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <!-- Modern Header with Logo -->
+    <header class="bg-white shadow-lg border-b-4 border-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-center space-x-4">
+                {% if logo_base64 %}
+                    <img src="{{ logo_base64 }}" alt="Obion County Schools" class="h-36 w-auto object-contain">
+                {% else %}
+                    <div class="h-36 w-36 bg-primary rounded-full flex items-center justify-center text-white font-bold text-5xl">
+                        OCS
+                    </div>
+                {% endif %}
+                <div class="text-center">
+                    <h1 class="text-5xl font-bold text-gray-900">Obion County Schools</h1>
+                    <p class="text-lg text-gray-600 mt-1">Administrative Forms Portal</p>
+                </div>
             </div>
-        {% endif %}
-    </div>
-    
-    <div class="tab-container">
-        <div class="tab-buttons">
-            <button class="tab-button active" onclick="showTab('fuel')">Fuel Report</button>
-            <button class="tab-button" onclick="showTab('timesheet')">Timesheet</button>
         </div>
-        
-        <!-- Fuel Report Tab -->
-        <div id="fuel-tab" class="tab-content active">
-            <div class="header">
-                OBION COUNTY SCHOOLS MONTHLY FUEL REPORT
-            </div>
-            <div class="form-header">
-                <div class="form-field">
-                    MONTH <input type="text" size="10" name="month" placeholder="Enter month">
-                </div>
-                <div class="form-field">
-                    YEAR <input type="text" size="6" name="year" placeholder="Enter year">
-                </div>
-                <div class="form-field">
-                    NAME <input type="text" size="25" name="name" placeholder="Enter your name">
-                </div>
-                <div class="form-field">
-                    VEH # <input type="text" size="8" name="vehicle_number" placeholder="Vehicle #">
-                </div>
-            </div>
-            
-            <div class="spacer"></div>
-            
-            <div class="button-container">
-                <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
-                <button class="btn btn-success" onclick="openEmail()">Open Email</button>
+    </header>
+    
+    <!-- Main Content Container -->
+    <main class="px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Modern Tab Navigation -->
+            <div class="border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <nav class="flex -mb-px">
+                    <button class="tab-button flex-1 py-4 px-6 text-center border-b-4 font-semibold text-lg transition-all duration-200 ease-in-out border-primary text-primary bg-white" onclick="showTab('fuel')">
+                        <svg class="inline-block w-6 h-6 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Fuel Report
+                    </button>
+                    <button class="tab-button flex-1 py-4 px-6 text-center border-b-4 font-semibold text-lg transition-all duration-200 ease-in-out border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50 hover:border-gray-300" onclick="showTab('timesheet')">
+                        <svg class="inline-block w-6 h-6 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Timesheet
+                    </button>
+                </nav>
             </div>
             
-            <div class="status-message" id="statusMessage"></div>
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-                <span>Processing...</span>
+            <!-- Status Messages -->
+            <div class="status-message hidden mx-6 mt-6 p-4 rounded-lg" id="statusMessage"></div>
+            <div class="loading hidden text-center py-12" id="loadingIndicator">
+                <div class="spinner mx-auto mb-4"></div>
+                <p class="text-gray-600 text-lg font-medium">Processing your request...</p>
             </div>
+            
+            <!-- Fuel Report Tab -->
+            <div id="fuel-tab" class="tab-content active p-6 md:p-8">
+                <!-- Page Title -->
+                <div class="mb-8 text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Monthly Fuel Report</h2>
+                    <div class="h-1 w-24 bg-primary mx-auto rounded-full"></div>
+                </div>
+                
+                <!-- Form Header Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200">
+                    <div class="form-field">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Month</label>
+                        <input type="text" name="month" placeholder="Enter month" 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                    </div>
+                    <div class="form-field">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Year</label>
+                        <input type="text" name="year" placeholder="Enter year"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                    </div>
+                    <div class="form-field">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Name</label>
+                        <input type="text" name="name" placeholder="Your name"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                    </div>
+                    <div class="form-field">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Vehicle #</label>
+                        <input type="text" name="vehicle_number" placeholder="Vehicle #"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <button onclick="downloadPDF()" 
+                            class="btn btn-primary inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download PDF
+                    </button>
+                    <button onclick="openEmail()"
+                            class="btn btn-success inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-lg">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Open Email
+                    </button>
+                </div>
             
             <table>
                 <thead>
