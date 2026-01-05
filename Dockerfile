@@ -15,16 +15,17 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo \
     libpng16-16 \
     libxss1 \
-    libgconf-2-4 \
     fonts-liberation \
     fonts-dejavu-core \
     fonts-noto \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install wkhtmltopdf using a more reliable method
-RUN apt-get update && apt-get install -y \
-    wkhtmltopdf \
+# Install wkhtmltopdf from official source
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && apt-get update \
+    && apt-get install -y ./wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory

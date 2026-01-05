@@ -1,0 +1,3 @@
+[bandit]
+exclude_dirs = ['/test', '/__pycache__', '/temp', '/static']
+skips = ['B108', 'B404', 'B603']
