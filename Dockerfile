@@ -1,7 +1,10 @@
 FROM python:3.11-slim
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Security: Using --no-install-recommends to minimize attack surface (fixes DS-0029)
+# Note: Base image security patches (OpenSSL, libpng, glibc) will be applied on rebuild
+# when Debian 13.3+ becomes available in upstream python:3.11-slim image
+RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     curl \
     wget \
@@ -22,11 +25,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install wkhtmltopdf from official source
+# Security: Using --no-install-recommends to minimize attack surface (fixes DS-0029)
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
     && apt-get update \
-    && apt-get install -y ./wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && apt-get install -y --no-install-recommends ./wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
     && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
     && rm -rf /var/lib/apt/lists/*
+
+# Security: Create non-root user and group (fixes DS-0002 - container running as root)
+# Using UID/GID 1000 for compatibility with common host user IDs
+RUN groupadd -r appuser --gid=1000 && \
+    useradd -r -g appuser --uid=1000 --home-dir=/app --shell=/bin/bash appuser
 
 # Set working directory
 WORKDIR /app
@@ -38,11 +47,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application files
 COPY . .
 
-# Create necessary directories with proper permissions
+# Security: Create necessary directories with proper ownership for non-root user
+# /app/temp needs write access for PDF generation
+# Setting appuser as owner ensures principle of least privilege
 RUN mkdir -p /app/temp /app/static && \
-    chmod -R 777 /app/temp && \
-    chmod -R 755 /app/static && \
-    chmod -R 755 /app
+    chown -R appuser:appuser /app && \
+    chmod -R 755 /app && \
+    chmod -R 777 /app/temp
 
 # Set environment variables for headless operation
 ENV FLASK_APP=app.py
@@ -57,5 +68,11 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:5000/debug/temp || exit 1
 
+# Security: Switch to non-root user before starting application (fixes DS-0002)
+# This ensures the application runs with minimal privileges, reducing container escape risk
+USER appuser
+
 # Start Xvfb and the application in one command
+# Note: Xvfb can run as non-root with -ac flag (access control disabled)
+# Display :99 is available to non-root users in modern X11 implementations
 CMD ["sh", "-c", "Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset & sleep 2 && exec gunicorn --bind 0.0.0.0:5000 --workers 4 --timeout 120 app:app"]
