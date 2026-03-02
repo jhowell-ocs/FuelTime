@@ -8,9 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             font-size: 12px;
-            line-height: 1.1;
+            line-height: 1.2;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -22,17 +22,32 @@
             margin-bottom: 15px;
         }
         
-        .timesheet-header {
-            display: flex;
-            justify-content: space-between;
+        /* Table-based header layout for wkhtmltopdf compatibility */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 15px;
-            gap: 20px;
+        }
+        
+        .header-table td {
+            vertical-align: top;
+            padding: 0;
+            border: none;
+        }
+        
+        .header-table td.left-cell {
+            width: 50%;
+            padding-right: 10px;
+        }
+        
+        .header-table td.right-cell {
+            width: 50%;
+            padding-left: 10px;
         }
         
         .employee-info, .support-info {
             border: 2px solid black;
             padding: 8px;
-            width: 48%;
             box-sizing: border-box;
         }
         
@@ -45,24 +60,28 @@
             border: 1px solid black;
         }
         
-        .info-row {
-            display: flex;
-            margin-bottom: 3px;
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .info-table td {
             border-bottom: 1px solid black;
-            min-height: 18px;
+            padding: 3px 4px;
+            font-size: 10px;
+            height: 20px;
         }
         
-        .info-label {
+        .info-table td.info-label {
             font-weight: bold;
-            min-width: 80px;
-            padding: 2px 4px;
-            font-size: 10px;
+            width: 100px;
+            border: none;
+            border-bottom: 1px solid black;
         }
         
-        .info-value {
-            flex: 1;
-            padding: 2px 4px;
-            font-size: 10px;
+        .info-table td.info-value {
+            border: none;
+            border-bottom: 1px solid black;
         }
         
         .time-period-section {
@@ -93,7 +112,7 @@
         
         .timesheet-table th, .timesheet-table td {
             border: 1px solid black;
-            padding: 2px;
+            padding: 2px 3px;
             text-align: center;
             height: 20px;
             white-space: nowrap;
@@ -129,15 +148,27 @@
             width: 80px;
         }
         
-        .timesheet-footer {
-            display: flex;
-            justify-content: space-between;
+        /* Table-based footer layout for wkhtmltopdf compatibility */
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 15px;
-            gap: 20px;
         }
         
-        .signatures {
-            width: 45%;
+        .footer-table td {
+            vertical-align: top;
+            padding: 0;
+            border: none;
+        }
+        
+        .footer-table td.sig-cell {
+            width: 50%;
+            padding-right: 15px;
+        }
+        
+        .footer-table td.codes-cell {
+            width: 50%;
+            padding-left: 15px;
         }
         
         .signature-section {
@@ -152,22 +183,19 @@
         
         .signature-line {
             border-bottom: 1px solid black;
-            margin-top: 3px;
-            height: 20px;
+            margin-top: 5px;
+            height: 25px;
             position: relative;
-            display: flex;
-            align-items: flex-end;
         }
         
         .signature-image {
             max-width: 150px;
-            max-height: 50px;
+            max-height: 45px;
             margin-bottom: 1px;
             margin-left: 120px;
         }
         
         .codes-section {
-            width: 50%;
             font-size: 9px;
         }
         
@@ -200,10 +228,16 @@
         
         /* Ensure all borders are visible in PDF */
         @media print {
-            table, th, td, .employee-info, .support-info {
+            .timesheet-table th, .timesheet-table td, .employee-info, .support-info {
                 border: 1px solid black !important;
                 print-color-adjust: exact !important;
                 -webkit-print-color-adjust: exact !important;
+            }
+            
+            .header-table, .header-table td,
+            .footer-table, .footer-table td,
+            .info-table td {
+                border: none !important;
             }
             
             .timesheet-table {
@@ -231,29 +265,37 @@
         OBION COUNTY SCHOOLS SUPPORT STAFF TIMESHEET
     </div>
     
-    <div class="timesheet-header">
-        <div class="employee-info">
-            <div class="info-row">
-                <div class="info-label">Employee Name:</div>
-                <div class="info-value">{{ form_data.get('emp_name', '') }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Position:</div>
-                <div class="info-value">{{ form_data.get('position', '') }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Employee Number:</div>
-                <div class="info-value">{{ form_data.get('emp_number', '') }}</div>
-            </div>
-        </div>
-        <div class="support-info">
-            <h3>Support Staff</h3>
-            <div class="time-period-section">
-                <div class="time-period-label">Time Period</div><br>
-                <div class="time-period-value">{{ form_data.get('time_period', '') }}</div>
-            </div>
-        </div>
-    </div>
+    <table class="header-table">
+        <tr>
+            <td class="left-cell">
+                <div class="employee-info">
+                    <table class="info-table">
+                        <tr>
+                            <td class="info-label">Employee Name:</td>
+                            <td class="info-value">{{ form_data.get('emp_name', '') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Position:</td>
+                            <td class="info-value">{{ form_data.get('position', '') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Employee Number:</td>
+                            <td class="info-value">{{ form_data.get('emp_number', '') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td class="right-cell">
+                <div class="support-info">
+                    <h3>Support Staff</h3>
+                    <div class="time-period-section">
+                        <div class="time-period-label">Time Period</div>
+                        <div class="time-period-value">{{ form_data.get('time_period', '') }}</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
     
     <table class="timesheet-table">
         <thead>
@@ -326,36 +368,40 @@
         <strong>{{ form_data.get('total_days', '0') }} Total days worked this pay period</strong>
     </div>
     
-    <div class="timesheet-footer">
-        <div class="signatures">
-            <div class="signature-section">
-                <div class="signature-label">Employee Signature</div>
-                <div class="signature-line">
-                    {% if form_data.get('employee_signature') %}
-                        <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" class="signature-image">
-                    {% endif %}
+    <table class="footer-table">
+        <tr>
+            <td class="sig-cell">
+                <div class="signature-section">
+                    <div class="signature-label">Employee Signature</div>
+                    <div class="signature-line">
+                        {% if form_data.get('employee_signature') %}
+                            <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" class="signature-image">
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="signature-section">
-                <div class="signature-label">Supervisor Signature</div>
-                <div class="signature-line">
-                    {% if form_data.get('supervisor_signature') %}
-                        <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" class="signature-image">
-                    {% endif %}
+                <div class="signature-section">
+                    <div class="signature-label">Supervisor Signature</div>
+                    <div class="signature-line">
+                        {% if form_data.get('supervisor_signature') %}
+                            <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" class="signature-image">
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="codes-section">
-            <div class="codes-title">Codes:</div>
-            <div class="code-item">Code P - Personal Leave</div>
-            <div class="code-item">Code AWOP - Absent Without Pay</div>
-            <div class="code-item">Code B - Bereavement Leave</div>
-            <div class="code-item">Code S - Sick Leave</div>
-            <div class="code-item">Code 6 - Meeting, etc.</div>
-            <div class="code-item">Code J - Court/Jury Duty</div>
-            <div class="code-item">Code H - Holiday</div>
-            <div class="code-item">Code V - Vacation</div>
-        </div>
-    </div>
+            </td>
+            <td class="codes-cell">
+                <div class="codes-section">
+                    <div class="codes-title">Codes:</div>
+                    <div class="code-item">Code P - Personal Leave</div>
+                    <div class="code-item">Code AWOP - Absent Without Pay</div>
+                    <div class="code-item">Code B - Bereavement Leave</div>
+                    <div class="code-item">Code S - Sick Leave</div>
+                    <div class="code-item">Code 6 - Meeting, etc.</div>
+                    <div class="code-item">Code J - Court/Jury Duty</div>
+                    <div class="code-item">Code H - Holiday</div>
+                    <div class="code-item">Code V - Vacation</div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
