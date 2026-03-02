@@ -4,6 +4,15 @@ This directory contains detailed documentation for the FuelTime application.
 
 ## 📚 Contents
 
+### [SECURITY_SCANNING_GUIDE.md](SECURITY_SCANNING_GUIDE.md)
+Complete guide to security scanning and vulnerability management:
+- GitHub Security tab setup (Code Scanning)
+- GitHub Advanced Security (GHAS) requirements
+- Viewing scan results (Security tab, artifacts, inline summaries)
+- Troubleshooting common issues
+- Manual local scanning
+- Understanding and interpreting vulnerability reports
+
 ### [SECURITY_AUDIT.md](SECURITY_AUDIT.md)
 Comprehensive security audit report including:
 - Detailed vulnerability findings

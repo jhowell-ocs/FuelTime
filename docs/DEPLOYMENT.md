@@ -67,8 +67,15 @@ docker run -d -p 5000:5000 \
 ### Viewing Results
 
 - **Security Reports**: Check the "Actions" tab in GitHub
-- **SARIF Results**: View in "Security" → "Code scanning alerts"
-- **Artifacts**: Download detailed reports from workflow runs
+- **SARIF Results (with GitHub Code Scanning)**: View in "Security" → "Code scanning alerts"
+  - Requires GitHub Advanced Security for private repositories
+  - Free for public repositories (must be manually enabled in Settings)
+  - See [`SECURITY_SCANNING_GUIDE.md`](SECURITY_SCANNING_GUIDE.md) for setup instructions
+- **SARIF Results (without Code Scanning)**: Download artifacts from workflow runs
+  - `trivy-filesystem-report` - Dependencies and code vulnerabilities
+  - `trivy-container-image-report` - Docker image vulnerabilities
+- **Inline Summaries**: View quick overviews in Actions tab job summaries
+- **Artifacts**: Download detailed JSON reports from workflow runs (90-day retention)
 
 ## 🛡️ Security Best Practices
 

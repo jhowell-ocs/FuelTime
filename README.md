@@ -25,11 +25,12 @@ Both forms feature professional PDF generation for official documentation and re
 
 ### 🔒 Security & Quality
 
-- Automated security scanning with Bandit, Safety, and Trivy
+- Automated security scanning with Bandit, pip-audit, and Trivy
 - Code quality checks with Pylint, Flake8, and Black
 - Continuous integration and deployment via GitHub Actions
 - Container vulnerability scanning
 - Regular dependency updates
+- **Security results**: View in [Security tab](../../security/code-scanning) (requires GitHub Code Scanning) or download from [Actions artifacts](../../actions)
 
 ## Deployment
 
@@ -146,7 +147,10 @@ bandit -r .
 pip-audit -r requirements.txt
 ```
 
-For detailed security information, see [SECURITY.md](SECURITY.md) and [DEPLOYMENT.md](docs/DEPLOYMENT.md).
+For detailed security information, see:
+- [SECURITY.md](SECURITY.md) - Security policy and vulnerability reporting
+- [SECURITY_SCANNING_GUIDE.md](docs/SECURITY_SCANNING_GUIDE.md) - Viewing and interpreting security scan results
+- [DEPLOYMENT.md](docs/DEPLOYMENT.md) - Security best practices for deployment
 
 ---
 

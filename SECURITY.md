@@ -6,10 +6,6 @@
 | ------- | ------------------ |
 | 1.0.x   | :white_check_mark: |
 
-## Reporting a Vulnerability
-
-If you discover a security vulnerability in FuelTime, please report it by emailing jhowell@ocboe.com.
-
 **Please do not report security vulnerabilities through public GitHub issues.**
 
 ### What to Include

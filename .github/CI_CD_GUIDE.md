@@ -112,20 +112,85 @@ Follow [SemVer](https://semver.org/):
 
 ### Security Scan Results
 
-1. **GitHub Security Tab**
+1. **GitHub Security Tab** (Requires Code Scanning Enabled)
    - Navigate to: `Security` → `Code scanning`
-   - View: Trivy SARIF results
+   - View: Trivy SARIF results organized by category:
+     - `trivy-filesystem` - Dependencies and code vulnerabilities
+     - `trivy-container-image` - Docker image vulnerabilities
    - Filter by: Severity, tool, status
+   - **Note:** Requires GitHub Code Scanning to be enabled (see below)
 
-2. **Action Artifacts**
+2. **Action Artifacts** (Always Available)
    - Go to: `Actions` → Select workflow run
-   - Download: `bandit-report`, `safety-report`
+   - Download: `trivy-filesystem-report`, `trivy-container-image-report`, `bandit-report`, `pip-audit-report`
    - Review: JSON files for detailed findings
+   - Retention: 90 days
 
-3. **Workflow Logs**
+3. **Inline Summaries** (Always Available)
+   - View quick vulnerability counts in Actions tab
+   - Click on job to see markdown summary
+   - Shows severity breakdown and top critical issues
+
+4. **Workflow Logs**
    - View real-time logs in Actions tab
    - Each job shows detailed output
    - Expand steps to see full command output
+
+---
+
+## 🔒 GitHub Advanced Security Requirements
+
+### For Private Repositories
+
+To use the GitHub Security tab integration for viewing SARIF results, you must enable **GitHub Advanced Security (GHAS)**:
+
+**Requirements:**
+- GHAS license (included in GitHub Enterprise or $49/user/month standalone)
+- Organization admin access to enable GHAS for the organization
+- Repository admin access to enable GHAS for this repository
+
+**Steps to Enable:**
+1. Navigate to: `Settings` → `Code security and analysis`
+2. Click "Enable" next to "GitHub Advanced Security"
+3. Click "Enable" next to "Code scanning"
+4. Confirm the workflow is detected
+
+**Without GHAS:**
+- Security scan results are still collected
+- SARIF upload will fail (expected behavior)
+- Use **artifacts** and **inline summaries** instead (always available)
+- All security scanning functionality continues to work
+
+### For Public Repositories
+
+Code scanning is **free** for public repositories but must be enabled manually:
+
+**Steps to Enable:**
+1. Navigate to: `Settings` → `Code security and analysis`
+2. Find "Code scanning" section
+3. Click `Set up` → `Advanced`
+4. Confirm workflow is detected (`.github/workflows/ci-cd.yml`)
+5. Enable code scanning
+
+**Verification:**
+```bash
+# Check if code scanning is enabled
+gh api repos/jhowell-ocs/FuelTime/code-scanning/alerts --paginate
+
+# 200 + results or empty array = Enabled
+# 404 = Code scanning not enabled
+```
+
+### Fallback: Artifacts
+
+If GitHub Code Scanning is not available or not enabled, security results are still fully accessible:
+
+- **Download artifacts**: Available from every workflow run
+- **View inline summaries**: Quick overview in Actions tab
+- **Check workflow logs**: Detailed output of all scans
+- **No data loss**: All security information is preserved
+
+For detailed setup and troubleshooting, see: [`docs/SECURITY_SCANNING_GUIDE.md`](../docs/SECURITY_SCANNING_GUIDE.md)
 
 ### Docker Build Logs
 
