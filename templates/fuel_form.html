@@ -300,10 +300,10 @@
         
         /* Timesheet Specific Styles */
         .auto-fill-section {
-            background-color: #f8f9fa;
-            border: 2px solid #007cba;
-            border-radius: 8px;
-            padding: 20px;
+            background: linear-gradient(to bottom right, #eff6ff, #eef2ff);
+            border: 2px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 20px;
         }
         
@@ -318,15 +318,16 @@
         .auto-fill-controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
+            gap: 20px;
+            align-items: flex-end;
+            justify-content: space-between;
         }
         
         .auto-fill-group {
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex: 1;
             min-width: 160px;
         }
         
@@ -338,44 +339,44 @@
         }
         
         .auto-fill-input {
-            width: 160px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
             text-align: center;
-            font-size: 20px;
-            height: 42px;
+            font-size: 1.125rem;
+            height: auto;
             box-sizing: border-box;
-            line-height: 1.4;
+            line-height: 1.75rem;
+            background-color: white;
+            outline: none;
             -webkit-appearance: none;
             -moz-appearance: textfield;
             appearance: none;
+            transition: border-color 0.15s ease-in-out;
         }
         
-        /* Ensure all input types have consistent height and font size */
-        .auto-fill-input[type="number"] {
-            height: 42px !important;
-            padding: 8px !important;
-            line-height: 1.4 !important;
-            font-size: 20px !important;
+        .auto-fill-input:focus {
+            border-color: #2563eb;
+            outline: none;
         }
         
-        .auto-fill-input[type="time"] {
-            height: 42px !important;
-            padding: 8px !important;
-            font-size: 20px !important;
-        }
-        
-        .auto-fill-input select {
-            height: 42px !important;
-            padding: 8px !important;
-            font-size: 20px !important;
+        /* Ensure all input types have consistent sizing */
+        .auto-fill-input[type="number"],
+        .auto-fill-input[type="time"],
+        select.auto-fill-input {
+            padding: 0.75rem 1rem !important;
+            font-size: 1.125rem !important;
+            height: auto !important;
+            line-height: 1.75rem !important;
         }
         
         .month-year-controls {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            gap: 20px;
+            align-items: flex-end;
+            flex: 2;
+            min-width: 300px;
         }
         
         .auto-fill-buttons {
