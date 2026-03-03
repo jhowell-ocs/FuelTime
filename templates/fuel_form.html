@@ -128,6 +128,29 @@
             border-bottom: 2px solid #007cba;
             background-color: #f9f9f9;
         }
+
+        /* Header section: override .form-field input styles so inputs and select match */
+        #fuel-header .form-field input,
+        #fuel-header .form-field select {
+            border: 2px solid #d1d5db;
+            border-bottom: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            line-height: 1.75rem;
+            background-color: white;
+            outline: none;
+            width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            height: auto;
+        }
+
+        #fuel-header .form-field input:focus,
+        #fuel-header .form-field select:focus {
+            border-color: #2563eb;
+            background-color: white;
+        }
         
         table {
             border-collapse: collapse;
@@ -800,26 +823,40 @@
                 </div>
                 
                 <!-- Form Header Fields -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200">
+                <div id="fuel-header" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200">
                     <div class="form-field">
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Month</label>
-                        <input type="text" name="month" placeholder="Enter month" 
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                        <select name="month"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none transition-all text-lg font-medium bg-white appearance-none">
+                            <option value="">Select month</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
                     </div>
                     <div class="form-field">
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Year</label>
                         <input type="text" name="year" placeholder="Enter year"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none transition-all text-lg font-medium bg-white">
                     </div>
                     <div class="form-field">
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Name</label>
                         <input type="text" name="name" placeholder="Your name"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none transition-all text-lg font-medium bg-white">
                     </div>
                     <div class="form-field">
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Vehicle #</label>
                         <input type="text" name="vehicle_number" placeholder="Vehicle #"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:outline-none transition-all text-lg font-medium">
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none transition-all text-lg font-medium bg-white">
                     </div>
                 </div>
                 
@@ -1126,15 +1163,22 @@
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(tab => tab.classList.remove('active'));
             
-            // Remove active class from all tab buttons
+            // Reset all tab buttons to inactive state (remove active styling, apply inactive styling)
             const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => button.classList.remove('active'));
+            tabButtons.forEach(button => {
+                button.classList.remove('active', 'border-primary', 'text-primary', 'bg-white');
+                button.classList.add('border-transparent', 'text-gray-600');
+            });
             
             // Show selected tab content
             document.getElementById(tabName + '-tab').classList.add('active');
             
-            // Add active class to selected button
-            event.target.classList.add('active');
+            // Set the clicked button to active state (apply active styling, remove inactive styling)
+            const activeButton = event.target.closest('.tab-button');
+            if (activeButton) {
+                activeButton.classList.add('active', 'border-primary', 'text-primary', 'bg-white');
+                activeButton.classList.remove('border-transparent', 'text-gray-600');
+            }
             
             // Initialize timesheet if switching to timesheet tab
             if (tabName === 'timesheet') {
@@ -1884,6 +1928,11 @@
             inputs.forEach(input => {
                 formData[input.name] = input.value || '';
             });
+
+            const selects = document.querySelectorAll('select[name]');
+            selects.forEach(select => {
+                formData[select.name] = select.value || '';
+            });
             
             return formData;
         }
@@ -1920,7 +1969,7 @@
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
-                    // Format filename as "Month Fuelsheet Year"
+                    // Format filename as "Month_Fuelsheet_Year"
                     function formatFuelReportFilename(month, year) {
                         if (!month || !year) return 'Fuelsheet.pdf';
                         
@@ -1929,16 +1978,14 @@
                             'July', 'August', 'September', 'October', 'November', 'December'
                         ];
                         
-                        try {
-                            const monthNum = parseInt(month);
-                            if (monthNum >= 1 && monthNum <= 12) {
-                                return `${monthNames[monthNum - 1]} Fuelsheet ${year}.pdf`;
-                            }
-                        } catch (e) {
-                            // Fallback
+                        let monthName = month;
+                        // If month is a number, convert to name
+                        const monthNum = parseInt(month);
+                        if (!isNaN(monthNum) && monthNum >= 1 && monthNum <= 12) {
+                            monthName = monthNames[monthNum - 1];
                         }
                         
-                        return `Fuelsheet_${month}_${year}.pdf`;
+                        return `${monthName}_Fuelsheet_${year}.pdf`;
                     }
                     
                     const a = document.createElement('a');

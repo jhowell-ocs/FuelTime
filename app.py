@@ -900,31 +900,33 @@ def format_timesheet_filename(time_period):
 
 
 def format_fuel_report_filename(month, year):
-    """Format fuel report filename as 'Month Fuelsheet Year' from month and year"""
+    """Format fuel report filename as 'Month_Fuelsheet_Year' from month and year"""
     try:
         if not month or not year:
             return "Fuelsheet"
 
-        # Convert month number to month name
         from datetime import datetime
 
-        # Handle month as string or number
+        month_name = None
+
+        # If month is already a full month name string (e.g. from dropdown), use it directly
         try:
-            if isinstance(month, str):
+            datetime.strptime(str(month).strip().capitalize(), "%B")
+            month_name = str(month).strip().capitalize()
+        except ValueError:
+            pass
+
+        # If not a name, try parsing as a number
+        if not month_name:
+            try:
                 month_num = int(month)
-            else:
-                month_num = month
+                month_date = datetime(2000, month_num, 1)
+                month_name = month_date.strftime("%B")
+            except (ValueError, TypeError):
+                month_name = str(month).strip()
 
-            # Create a date with the given month to get month name
-            month_date = datetime(2000, month_num, 1)
-            month_name = month_date.strftime("%B")
-
-            # Format as "Month Fuelsheet Year"
-            return f"{month_name} Fuelsheet {year}"
-
-        except (ValueError, TypeError):
-            # Fallback if month parsing fails
-            return f"Fuelsheet {month}_{year}"
+        # Format as "Month_Fuelsheet_Year"
+        return f"{month_name}_Fuelsheet_{year}"
 
     except Exception:
         # Ultimate fallback
