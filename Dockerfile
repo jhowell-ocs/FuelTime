@@ -1,10 +1,11 @@
 FROM python:3.11-slim
 
-# Install system dependencies
+# Install system dependencies and apply all available security patches
+# Security: apt-get upgrade ensures latest OS-level CVE fixes (OpenSSL, libpng, gnutls, etc.)
 # Security: Using --no-install-recommends to minimize attack surface (fixes DS-0029)
-# Note: Base image security patches (OpenSSL, libpng, glibc) will be applied on rebuild
-# when Debian 13.3+ becomes available in upstream python:3.11-slim image
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
     xvfb \
     curl \
     wget \
@@ -42,7 +43,8 @@ WORKDIR /app
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir --upgrade pip wheel
 
 # Copy application files
 COPY . .
