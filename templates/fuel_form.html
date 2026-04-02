@@ -1567,6 +1567,18 @@
             updateTotalDays();
         }
         
+        function formatTimeTo12Hour(timeStr) {
+            if (!timeStr) return '';
+            const parts = timeStr.split(':');
+            if (parts.length < 2) return timeStr;
+            const hours = parseInt(parts[0], 10);
+            const minutes = parts[1];
+            if (isNaN(hours)) return timeStr;
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const hour12 = hours % 12 || 12;
+            return `${hour12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+        }
+
         function downloadTimesheetPDF() {
             // Collect all form data from the timesheet
             const formData = {};
@@ -1641,7 +1653,14 @@
             hoursFields.forEach(field => {
                 console.log(`Debug: ${field} = ${formData[field]}`);
             });
-            
+
+            // Convert time fields from 24-hour to 12-hour AM/PM format for PDF display
+            Object.keys(formData).forEach(key => {
+                if (key.startsWith('time_in_') || key.startsWith('time_out_')) {
+                    formData[key] = formatTimeTo12Hour(formData[key]);
+                }
+            });
+
             // Show loading indicator
             const statusDiv = document.getElementById('timesheetStatusMessage');
             statusDiv.innerHTML = '<div class="spinner"></div> Generating PDF...';

@@ -182,17 +182,10 @@
         }
         
         .signature-line {
-            border-bottom: 1px solid black;
-            margin-top: 5px;
-            height: 25px;
-            position: relative;
-        }
-        
-        .signature-image {
-            max-width: 150px;
-            max-height: 45px;
-            margin-bottom: 1px;
-            margin-left: 120px;
+            border-bottom: 1px solid #000;
+            width: 300px;
+            height: 2px;
+            margin-bottom: 10px;
         }
         
         .codes-section {
@@ -373,19 +366,17 @@
             <td class="sig-cell">
                 <div class="signature-section">
                     <div class="signature-label">Employee Signature</div>
-                    <div class="signature-line">
-                        {% if form_data.get('employee_signature') %}
-                            <img src="{{ form_data.get('employee_signature') }}" alt="Employee Signature" class="signature-image">
-                        {% endif %}
-                    </div>
+                    {% if form_data.get('employee_signature') %}
+                    <img src="{{ form_data.get('employee_signature') }}" style="display:block; max-height:60px; margin-bottom:4px;" alt="Employee Signature" />
+                    {% endif %}
+                    <div class="signature-line"></div>
                 </div>
                 <div class="signature-section">
                     <div class="signature-label">Supervisor Signature</div>
-                    <div class="signature-line">
-                        {% if form_data.get('supervisor_signature') %}
-                            <img src="{{ form_data.get('supervisor_signature') }}" alt="Supervisor Signature" class="signature-image">
-                        {% endif %}
-                    </div>
+                    {% if form_data.get('supervisor_signature') %}
+                    <img src="{{ form_data.get('supervisor_signature') }}" style="display:block; max-height:60px; margin-bottom:4px;" alt="Supervisor Signature" />
+                    {% endif %}
+                    <div class="signature-line"></div>
                 </div>
             </td>
             <td class="codes-cell">
